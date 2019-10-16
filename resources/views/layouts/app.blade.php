@@ -10,15 +10,15 @@
         @yield('title')
 
 <!-- Scripts -->
-    <script src="{{ asset('js/bootstrap.min.js') }}" defer></script>
+    <script src="{{ secure_asset('js/bootstrap.min.js') }}" defer></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
     <!-- Styles -->
-    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/blog.css') }}" rel="stylesheet">
+    <link href="{{ secure_asset('css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ secure_asset('css/blog.css') }}" rel="stylesheet">
 </head>
 <body>
 <div id="app">
