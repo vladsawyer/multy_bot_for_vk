@@ -17,7 +17,9 @@ Route::get('/', function () {
 });
 
 Route::get('lessons', 'LessonsController@index') -> name('lessons');
+Route::get('callback', 'HomeController@index') -> name('callback.verify');
+Route::post('callback', 'HomeController@index') -> name('callback.verify');
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+//Route::get('/home', 'HomeController@index')->name('home');

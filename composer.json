@@ -13,7 +13,8 @@
         "laravel/framework": "^6.0",
         "laravel/passport": "^7.5",
         "laravel/tinker": "^1.0",
-        "vkcom/vk-php-sdk": "^5.101"
+        "vkcom/vk-php-sdk": "^5.101",
+        "ext-json": "*"
     },
     "require-dev": {
         "facade/ignition": "^1.4",
