@@ -36,9 +36,6 @@ class HomeController extends Controller
         }
         mylog($vk_callback_event);
 
-       if (!$vk_callback_event){
-           return 'nioh';
-       }
 
         try{
             if ($vk_callback_event -> secret !== getenv('VK_SECRET_TOKEN')) {
