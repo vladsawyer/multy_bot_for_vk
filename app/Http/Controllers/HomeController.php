@@ -31,10 +31,10 @@ class HomeController extends Controller
         // получаю json события
         $vk_callback_event = json_decode(file_get_contents('php://input'));
         //для удобного логирования данных
-        function mylog($str){
-            file_put_contents('php://stdout', "$str\n");
-        }
-        mylog($vk_callback_event);
+//        function mylog($str){
+//            file_put_contents('php://stdout', "$str\n");
+//        }
+//        mylog($vk_callback_event);
 
 
         try{
