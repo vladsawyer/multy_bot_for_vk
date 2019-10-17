@@ -38,11 +38,11 @@ class HomeController extends Controller
 
 
         try{
-            if ($vk_callback_event -> secret !== getenv('VK_SECRET_TOKEN')) {
+            if ($vk_callback_event['secret'] !== getenv('VK_SECRET_TOKEN')) {
                 return $php_errormsg;
             }
 
-            switch ($vk_callback_event -> type){
+            switch ($vk_callback_event['type']){
                 case 'confirmation':
                     return getenv('VK_CONFIRMATION_CODE');
 
