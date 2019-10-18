@@ -17,10 +17,7 @@ class HomeController extends Controller
 //        $this->middleware('auth');
 //    }
 
-//для удобного логирования данных
-    function myLog($str){
-        file_put_contents("php://stdout", "$str");
-    }
+
 
     /**
      * Show the application dashboard.
@@ -38,7 +35,7 @@ class HomeController extends Controller
         // получаю json события
         $vk_callback_event = json_decode(file_get_contents("php://input"));
 
-        $this -> myLog($vk_callback_event);
+
         return 'ok';
 //
 //
