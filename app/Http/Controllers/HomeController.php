@@ -39,7 +39,7 @@ class HomeController extends Controller
         $vk_callback_event = json_decode(file_get_contents('php://input'));
 
         $this -> myLog($vk_callback_event);
-        return 'cd67c762';
+        return 'ok';
 //
 //
 //        try{
