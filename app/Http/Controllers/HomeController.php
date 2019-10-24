@@ -17,7 +17,8 @@ class HomeController extends Controller
 //        $this->middleware('auth');
 //    }
 public function getcontent(){
-    header('Content-Type: text/html; charset=ASCII');
+
+//    header('Content-Type: text/html; charset=ASCII');
     header('HTTP/1.1 200 OK');
 
     // получаю json события
@@ -34,6 +35,7 @@ public function getcontent(){
 //     */
     public function index($vk_callback_event)
     {
+        header('HTTP/1.1 200 OK');
 
         try{
             if ($vk_callback_event -> secret !== getenv('VK_SECRET_TOKEN')) {
