@@ -40,13 +40,13 @@ class HomeController extends Controller
 
         try{
             if ($vk_callback_event -> secret !== getenv('VK_SECRET_TOKEN')) {
-                return 'nioh';
+                return response('nioh');
 
             }
 
             switch ($vk_callback_event -> type){
                 case 'confirmation':
-                    return getenv('VK_CONFIRMATION_CODE');
+                    return response(getenv('VK_CONFIRMATION_CODE'));
                     break;
 
                 case 'message_new':
@@ -70,10 +70,10 @@ class HomeController extends Controller
                         ));
                     }
 
-                    return 'ok';
+                    return response('ok');
                     break;
                 default:
-                    return 'ok';
+                    return response('ok');
                     break;
             }
 
