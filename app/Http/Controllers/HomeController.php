@@ -33,8 +33,8 @@ class HomeController extends Controller
 
 
         // получаю json события
-       $vk_callback_event = file_get_contents("php://input");
-        $vk_callback_event = json_decode($vk_callback_event);
+       $vk_callback_event_0 = file_get_contents("php://input");
+        $vk_callback_event = json_decode($vk_callback_event_0);
 
 
 
