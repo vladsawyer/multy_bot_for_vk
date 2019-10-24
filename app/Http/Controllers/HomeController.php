@@ -16,27 +16,24 @@ class HomeController extends Controller
 //    {
 //        $this->middleware('auth');
 //    }
+public function getcontent(){
+    header('Content-Type: text/html; charset=ASCII');
+    header('HTTP/1.1 200 OK');
+
+    // получаю json события
+    $vk_callback_event_0 = file_get_contents("php://input");
+    $vk_callback_event = json_decode($vk_callback_event_0);
+    return redirect()->route('callback.verify', compact('vk_callback_event'));
+}
 
 
-
-    /**
-     * Show the application dashboard.
-     *
-     * @return string
-     */
-    public function index()
+//    /**
+//     * Show the application dashboard.
+//     *
+//     * @return string
+//     */
+    public function index($vk_callback_event)
     {
-
-        header('Content-Type: text/html; charset=ASCII');
-        header('HTTP/1.1 200 OK');
-
-
-
-        // получаю json события
-       $vk_callback_event_0 = file_get_contents("php://input");
-        $vk_callback_event = json_decode($vk_callback_event_0);
-
-
 
         try{
             if ($vk_callback_event -> secret !== getenv('VK_SECRET_TOKEN')) {
