@@ -19,7 +19,7 @@ class HomeController extends Controller
 public function getcontent(){
 
 //    header('Content-Type: text/html; charset=ASCII');
-    header('HTTP/1.1 200 OK');
+    header($_SERVER['SERVER_PROTOCOL'].'200 OK');
 
     // получаю json события
     $vk_callback_event_0 = file_get_contents("php://input");
@@ -35,7 +35,7 @@ public function getcontent(){
 //     */
     public function index($vk_callback_event)
     {
-        header('HTTP/1.1 200 OK');
+        header($_SERVER['SERVER_PROTOCOL'].'200 OK');
 
         try{
             if ($vk_callback_event -> secret !== getenv('VK_SECRET_TOKEN')) {
