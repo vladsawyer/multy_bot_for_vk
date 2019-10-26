@@ -24,7 +24,7 @@ class HomeController extends Controller
 //     */
     public function index()
     {
-        header($_SERVER['SERVER_PROTOCOL'].'200 OK');
+//        header($_SERVER['SERVER_PROTOCOL'].'200 OK');
 
         $vk_callback_event_0 = file_get_contents("php://input");
         $vk_callback_event = json_decode($vk_callback_event_0);
