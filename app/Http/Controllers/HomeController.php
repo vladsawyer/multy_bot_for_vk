@@ -59,7 +59,7 @@ class HomeController extends Controller
                                 'message' => "Добро пожаловать Милорд $name",
                                 'random_id' => $random_id,
                             ));
-                        } elseif ($conversation_message_id > 1){
+                        } elseif ($conversation_message_id > 2){
                             // отправляем сообщение приветствие
                             $vk = new VKApiClient('5.101');
                             $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
@@ -76,6 +76,7 @@ class HomeController extends Controller
                             ));
                         }
                         echo 'ok';
+                        break;
                     } catch (\VK\Exceptions\VKApiException $e){
                         $this -> getlog($e -> getMessage());
                     }
