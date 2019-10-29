@@ -42,6 +42,7 @@ class HomeController extends Controller
                     $user_id = $message['from_id'];
                     $txt =  $message['text'];
                     $random_id = $message['random_id'];
+                    $conversation_message_id = $message['conversation_message_id'];
 
                     // получаю его имя
                     $vk = new VKApiClient(5.102);
@@ -50,15 +51,32 @@ class HomeController extends Controller
                     ));
                     $name = $response[0]['first_name'];
 
-                    if ($txt === ('привет' || 'начать' )){
+                    if ($txt == "привет" || "начать" && $conversation_message_id == 1){
                         // отправляем сообщение приветствие
-                        $vk = new VKApiClient(5.102);
-                        $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
+                        $vk = new VKApiClient('5.102');
+                        $response = $vk->messages()->send($GLOBALS['access_token'], array(
                             'user_id' => $user_id,
                             'message' => "Добро пожаловать Милорд $name",
-                            'random_id' => $random_id
+                            'random_id' => $random_id,
+                        ));
+                    } elseif ($conversation_message_id > 1){
+                        // отправляем сообщение приветствие
+                        $vk = new VKApiClient('5.102');
+                        $response = $vk->messages()->send($GLOBALS['access_token'], array(
+                            'user_id' => $user_id,
+                            'message' => "$name скоро допилится функционал и вы сможите: 
+                    
+                     1) переводить текст в голосовые сообщения
+                     2) менять голос бота 
+                     3) добавлять бота в чаты и переводить голосовые сообщения в текст
+                     5) возможно многофункциональный переводчик, но это не точно:)
+                     
+                     Доброго дня)
+                     ",
+                            'random_id' => $random_id,
                         ));
                     }
+
 
                     echo 'ok';
                     break;
