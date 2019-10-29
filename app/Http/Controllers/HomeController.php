@@ -50,8 +50,8 @@ class HomeController extends Controller
                             'user_ids' => [$user_id],
                         ));
                         $name = $response[0]['first_name'];
-
-                        if ($txt == ("Привет" || "Начать") && $conversation_message_id == 1){
+//&& $conversation_message_id == 1
+                        if ($txt == ("Привет" || "Начать") ){
                             // отправляем сообщение приветствие
                             $vk = new VKApiClient('5.101');
                             $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
@@ -59,6 +59,8 @@ class HomeController extends Controller
                                 'message' => "Добро пожаловать Милорд $name",
                                 'random_id' => $random_id,
                             ));
+                            echo 'ok';
+                            break;
                         } elseif ($conversation_message_id > 2){
                             // отправляем сообщение приветствие
                             $vk = new VKApiClient('5.101');
