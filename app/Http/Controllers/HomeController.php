@@ -22,14 +22,13 @@ class HomeController extends Controller
      */
     public function index()
     {
-
+        header("HTTP/1.1 200 OK");
         $vk_callback_event =  json_decode(file_get_contents("php://input"), true);
         $this -> getlog(json_encode($vk_callback_event));
-        try{
-            if ($vk_callback_event['secret'] !== getenv('VK_SECRET_TOKEN')) {
-                return response('nioh');
+        if ($vk_callback_event['secret'] !== getenv('VK_SECRET_TOKEN')) {
+            return response('nioh');
 
-            }
+        }
 
             switch ($vk_callback_event['type']){
                 case 'confirmation':
@@ -37,59 +36,50 @@ class HomeController extends Controller
                     break;
 
                 case 'message_new':
-                    // получил id отправителя сообщения
-                    $message = $vk_callback_event['object'];
-                    $user_id = $message['from_id'];
-                    $txt =  $message['text'];
-                    $random_id = $message['random_id'];
-                    $conversation_message_id = $message['conversation_message_id'];
+                    try{
+                        // получил id отправителя сообщения
+                        $message = $vk_callback_event['object'];
+                        $user_id = $message['from_id'];
+                        $txt =  $message['text'];
+                        $random_id = $message['random_id'];
+                        $conversation_message_id = $message['conversation_message_id'];
 
-                    // получаю его имя
-                    $vk = new VKApiClient('5.101');
-                    $response = $vk->users()->get(getenv('VK_TOKEN'), array(
-                        'user_ids' => [$user_id],
-                    ));
-                    $name = $response[0]['first_name'];
+                        // получаю его имя
+                        $vk = new VKApiClient('5.101');
+                        $response = $vk->users()->get(getenv('VK_TOKEN'), array(
+                            'user_ids' => [$user_id],
+                        ));
+                        $name = $response[0]['first_name'];
 
-                    if ($txt == "привет" || "начать" && $conversation_message_id == 1){
-                        // отправляем сообщение приветствие
-                        $vk = new VKApiClient('5.101');
-                        $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
-                            'user_id' => $user_id,
-                            'message' => "Добро пожаловать Милорд $name",
-                            'random_id' => $random_id,
-                        ));
-                    } elseif ($conversation_message_id > 1){
-                        // отправляем сообщение приветствие
-                        $vk = new VKApiClient('5.101');
-                        $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
-                            'user_id' => $user_id,
-                            'message' => "$name скоро допилится функционал и вы сможите: 
-                    
-                     1) переводить текст в голосовые сообщения
-                     2) менять голос бота 
-                     3) добавлять бота в чаты и переводить голосовые сообщения в текст
-                     5) возможно многофункциональный переводчик, но это не точно:)
-                     
-                     Доброго дня)
-                     ",
-                            'random_id' => $random_id,
-                        ));
+                        if ($txt == "привет" || "начать" && $conversation_message_id == 1){
+                            // отправляем сообщение приветствие
+                            $vk = new VKApiClient('5.101');
+                            $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
+                                'user_id' => $user_id,
+                                'message' => "Добро пожаловать Милорд $name",
+                                'random_id' => $random_id,
+                            ));
+                        } elseif ($conversation_message_id > 1){
+                            // отправляем сообщение приветствие
+                            $vk = new VKApiClient('5.101');
+                            $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
+                                'user_id' => $user_id,
+                                'message' => "$name скоро допилится функционал и вы сможите: 
+1) переводить текст в голосовые сообщения
+2) менять голос бота 
+3) добавлять бота в чаты и переводить голосовые сообщения в текст
+5) возможно многофункциональный переводчик, но это не точно:)
+                         
+Доброго дня)
+                         ",
+                                'random_id' => $random_id,
+                            ));
+                        }
+                        echo 'ok';
+                    } catch (\VK\Exceptions\VKApiException $e){
+                        $this -> getlog($e -> getMessage());
                     }
-
-
-                    echo 'ok';
-                    break;
-                default:
-                   echo 'ok';
-                    break;
             }
-
-        } catch (\VK\Exceptions\VKApiException $e){
-            $this -> getlog($e -> getMessage());
-        }
-
-
     }
 
     function getlog($msg){
