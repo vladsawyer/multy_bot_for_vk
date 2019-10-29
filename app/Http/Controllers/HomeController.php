@@ -41,7 +41,7 @@ class HomeController extends Controller
                     $message = $vk_callback_event['object'];
                     $user_id = $message['from_id'];
                     $txt =  $message['text'];
-                    $conversation_message_id = $message['conversation_message_id'];
+                    $random_id = $message['random_id'];
 
                     // получаю его имя
                     $vk = new VKApiClient(5.102);
@@ -56,7 +56,7 @@ class HomeController extends Controller
                         $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
                             'user_id' => $user_id,
                             'message' => "Добро пожаловать Милорд $name",
-                            'random_id' => $conversation_message_id
+                            'random_id' => $random_id
                         ));
                     }
 
