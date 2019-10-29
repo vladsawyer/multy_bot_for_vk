@@ -66,7 +66,7 @@ class HomeController extends Controller
                             $vk = new VKApiClient('5.101');
                             $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
                                 'user_id' => $user_id,
-                                'message' => "Добро пожаловать Милорд $name",
+                                'message' => "С возвращением $name \n вот список команд, пока только одна команда:) : \n 1) что умеешь",
                                 'random_id' => $random_id,
                             ));
                             echo 'ok';
