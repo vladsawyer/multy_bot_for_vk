@@ -56,7 +56,7 @@ class HomeController extends Controller
                             $vk = new VKApiClient('5.101');
                             $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
                                 'user_id' => $user_id,
-                                'message' => "Добро пожаловать $name \n вот список команд, пока только одна команда:) : \n 1) что умеешь",
+                                'message' => "Добро пожаловать $name \n Вот список команд: \n 1) что умеешь",
                                 'random_id' => $random_id,
                             ));
                             echo 'ok';
@@ -66,17 +66,27 @@ class HomeController extends Controller
                             $vk = new VKApiClient('5.101');
                             $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
                                 'user_id' => $user_id,
-                                'message' => "С возвращением $name \n вот список команд, пока только одна команда:) : \n 1) что умеешь",
+                                'message' => "С возвращением $name \n Вот список команд: \n 1) что умеешь",
                                 'random_id' => $random_id,
                             ));
                             echo 'ok';
                             break;
                         } elseif ($txt == ("что умеешь" || "Что умеешь") && $conversation_message_id > 2){
-                            // отправляем сообщение приветствие
+                            // отправляем сообщение
                             $vk = new VKApiClient('5.101');
                             $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
                                 'user_id' => $user_id,
                                 'message' => "$name скоро допилится функционал и вы сможите: \n 1) переводить текст в голосовые сообщения \n 2) менять голос бота \n 3) добавлять бота в чаты и переводить голосовые сообщения в текст \n 5) возможно многофункциональный переводчик, но это не точно:) \n \n Доброго дня)",
+                                'random_id' => $random_id,
+                            ));
+                            echo 'ok';
+                            break;
+                        } else {
+                            // отправляем сообщение
+                            $vk = new VKApiClient('5.101');
+                            $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
+                                'user_id' => $user_id,
+                                'message' => "Неверная команда! \n Вот список команд: \n 1) что умеешь",
                                 'random_id' => $random_id,
                             ));
                             echo 'ok';
