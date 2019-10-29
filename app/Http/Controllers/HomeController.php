@@ -50,9 +50,19 @@ class HomeController extends Controller
                             'user_ids' => [$user_id],
                         ));
                         $name = $response[0]['first_name'];
-//&& $conversation_message_id == 1
-                        if ($txt == ("Привет" || "Начать") ){
+
+                        if ($txt == ("Привет" || "Начать" || "привет") && $conversation_message_id == 1){
                             // отправляем сообщение приветствие
+                            $vk = new VKApiClient('5.101');
+                            $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
+                                'user_id' => $user_id,
+                                'message' => "Добро пожаловать $name \n вот список команд, пока только одна команда:) : \n 1) что умеешь",
+                                'random_id' => $random_id,
+                            ));
+                            echo 'ok';
+                            break;
+                        } elseif ($txt == ("Привет" || "Начать" || "привет") && $conversation_message_id > 2){
+                            // отправляем сообщение приветствие c возвращением
                             $vk = new VKApiClient('5.101');
                             $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
                                 'user_id' => $user_id,
@@ -61,24 +71,18 @@ class HomeController extends Controller
                             ));
                             echo 'ok';
                             break;
-                        } elseif ($conversation_message_id > 2){
+                        } elseif ($txt == ("что умеешь" || "Что умеешь") && $conversation_message_id > 2){
                             // отправляем сообщение приветствие
                             $vk = new VKApiClient('5.101');
                             $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
                                 'user_id' => $user_id,
-                                'message' => "$name скоро допилится функционал и вы сможите: 
-1) переводить текст в голосовые сообщения
-2) менять голос бота 
-3) добавлять бота в чаты и переводить голосовые сообщения в текст
-5) возможно многофункциональный переводчик, но это не точно:)
-                         
-Доброго дня)
-                         ",
+                                'message' => "$name скоро допилится функционал и вы сможите: \n 1) переводить текст в голосовые сообщения \n 2) менять голос бота \n 3) добавлять бота в чаты и переводить голосовые сообщения в текст \n 5) возможно многофункциональный переводчик, но это не точно:) \n \n Доброго дня)",
                                 'random_id' => $random_id,
                             ));
+                            echo 'ok';
+                            break;
                         }
-                        echo 'ok';
-                        break;
+
                     } catch (\VK\Exceptions\VKApiException $e){
                         $this -> getlog($e -> getMessage());
                     }
