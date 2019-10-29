@@ -60,16 +60,18 @@ class HomeController extends Controller
                                 'random_id' => $random_id,
                             ));
                             echo 'ok';
-                        } elseif ($txt == ("Привет" || "Начать" || "привет") && $conversation_message_id != 0){
-                            // отправляем сообщение приветствие c возвращением
-                            $vk = new VKApiClient('5.101');
-                            $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
-                                'user_id' => $user_id,
-                                'message' => "С возвращением $name \n Вот список команд: \n 1) что умеешь",
-                                'random_id' => $random_id,
-                            ));
-                            echo 'ok';
-                        } elseif ($txt == "что умеешь" || "Что умеешь"){
+                        }
+//                        elseif ($txt == ("Привет" || "Начать" || "привет") && $conversation_message_id != 0){
+//                            // отправляем сообщение приветствие c возвращением
+//                            $vk = new VKApiClient('5.101');
+//                            $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
+//                                'user_id' => $user_id,
+//                                'message' => "С возвращением $name \n Вот список команд: \n 1) что умеешь",
+//                                'random_id' => $random_id,
+//                            ));
+//                            echo 'ok';
+//                        }
+                        elseif ($txt == "что умеешь" || "Что умеешь"){
                             // отправляем сообщение
                             $vk = new VKApiClient('5.101');
                             $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
