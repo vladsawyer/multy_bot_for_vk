@@ -45,7 +45,7 @@ class HomeController extends Controller
                     $conversation_message_id = $message['conversation_message_id'];
 
                     // получаю его имя
-                    $vk = new VKApiClient(5.102);
+                    $vk = new VKApiClient('5.101');
                     $response = $vk->users()->get(getenv('VK_TOKEN'), array(
                         'user_ids' => [$user_id],
                     ));
@@ -54,7 +54,7 @@ class HomeController extends Controller
                     if ($txt == "привет" || "начать" && $conversation_message_id == 1){
                         // отправляем сообщение приветствие
                         $vk = new VKApiClient('5.101');
-                        $response = $vk->messages()->send($GLOBALS['access_token'], array(
+                        $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
                             'user_id' => $user_id,
                             'message' => "Добро пожаловать Милорд $name",
                             'random_id' => $random_id,
@@ -62,7 +62,7 @@ class HomeController extends Controller
                     } elseif ($conversation_message_id > 1){
                         // отправляем сообщение приветствие
                         $vk = new VKApiClient('5.101');
-                        $response = $vk->messages()->send($GLOBALS['access_token'], array(
+                        $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
                             'user_id' => $user_id,
                             'message' => "$name скоро допилится функционал и вы сможите: 
                     
