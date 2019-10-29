@@ -17,36 +17,34 @@ class HomeController extends Controller
 //        $this->middleware('auth');
 //    }
 
-//    /**
-//     * Show the application dashboard.
-//     *
-//     * @return string
-//     */
+    /**
+     * @return string
+     */
     public function index()
     {
-//        header($_SERVER['SERVER_PROTOCOL'].'200 OK');
 
-        $vk_callback_event_0 = file_get_contents("php://input");
-        $vk_callback_event = json_decode($vk_callback_event_0);
-
+        $vk_callback_event =  json_decode(file_get_contents("php://input"), true);
+        $this -> getlog(json_encode($vk_callback_event));
         try{
-            if ($vk_callback_event -> secret !== getenv('VK_SECRET_TOKEN')) {
+            if ($vk_callback_event['secret'] !== getenv('VK_SECRET_TOKEN')) {
                 return response('nioh');
 
             }
 
-            switch ($vk_callback_event -> type){
+            switch ($vk_callback_event['type']){
                 case 'confirmation':
                     return response(getenv('VK_CONFIRMATION_CODE'));
                     break;
 
                 case 'message_new':
                     // получил id отправителя сообщения
-                    $user_id = $vk_callback_event['object'] -> from_id;
-                    $txt = $vk_callback_event['object'] -> text;
+                    $message = $vk_callback_event['object'];
+                    $user_id = $message['from_id'];
+                    $txt =  $message['text'];
+                    $conversation_message_id = $message['conversation_message_id'];
 
                     // получаю его имя
-                    $vk = new VKApiClient();
+                    $vk = new VKApiClient(5.102);
                     $response = $vk->users()->get(getenv('VK_TOKEN'), array(
                         'user_ids' => [$user_id],
                     ));
@@ -54,27 +52,30 @@ class HomeController extends Controller
 
                     if ($txt === ('привет' || 'начать' )){
                         // отправляем сообщение приветствие
-                        $vk = new VKApiClient();
+                        $vk = new VKApiClient(5.102);
                         $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
                             'user_id' => $user_id,
                             'message' => "Добро пожаловать Милорд $name",
+                            'random_id' => $conversation_message_id
                         ));
                     }
 
-                    return response('ok');
+                    echo 'ok';
                     break;
                 default:
-                    return response('ok');
+                   echo 'ok';
                     break;
             }
 
-        } catch (\Exception $ex) {
-            //Выводим сообщение об исключении.
-            echo $ex->getMessage();
+        } catch (\VK\Exceptions\VKApiException $e){
+            $this -> getlog($e -> getMessage());
         }
 
 
     }
 
+    function getlog($msg){
+        file_put_contents('php://stdout', $msg. "\n");
+    }
 
 }

@@ -3,8 +3,11 @@ html, body {
     font-family: 'Nunito', sans-serif;
     /*background-color: #fff;*/
     background-position: center;
-    background-image: url("../images/backgraund_home_2.png");
-    background-size: auto;
+    background: url("../images/backgraund_home.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    /*background-size: auto;*/
     color: #636b6f;
     font-weight: 300;
     height: 100vh;
