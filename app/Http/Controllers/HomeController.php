@@ -60,18 +60,20 @@ class HomeController extends Controller
                                 'random_id' => $random_id,
                             ));
                             echo 'ok';
+                            break;
                         }
-//                        elseif ($txt == ("Привет" || "Начать" || "привет") && $conversation_message_id != 0){
-//                            // отправляем сообщение приветствие c возвращением
-//                            $vk = new VKApiClient('5.101');
-//                            $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
-//                                'user_id' => $user_id,
-//                                'message' => "С возвращением $name \n Вот список команд: \n 1) что умеешь",
-//                                'random_id' => $random_id,
-//                            ));
-//                            echo 'ok';
-//                        }
-                        elseif ($txt == "что умеешь" || "Что умеешь"){
+                        if ($txt == ("Привет" || "Начать" || "привет") && $conversation_message_id != 0){
+                            // отправляем сообщение приветствие c возвращением
+                            $vk = new VKApiClient('5.101');
+                            $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
+                                'user_id' => $user_id,
+                                'message' => "С возвращением $name \n Вот список команд: \n 1) что умеешь",
+                                'random_id' => $random_id,
+                            ));
+                            echo 'ok';
+                            break;
+                        }
+                        if ($txt == "что умеешь" || "Что умеешь"){
                             // отправляем сообщение
                             $vk = new VKApiClient('5.101');
                             $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
@@ -80,6 +82,7 @@ class HomeController extends Controller
                                 'random_id' => $random_id,
                             ));
                             echo 'ok';
+                            break;
                         } else {
                             // отправляем сообщение
                             $vk = new VKApiClient('5.101');
@@ -89,8 +92,9 @@ class HomeController extends Controller
                                 'random_id' => $random_id,
                             ));
                             echo 'ok';
+                            break;
                         }
-                        break;
+
 
                     } catch (\VK\Exceptions\VKApiException $e){
                         $this -> getlog($e -> getMessage());
