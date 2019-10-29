@@ -51,7 +51,7 @@ class HomeController extends Controller
                         ));
                         $name = $response[0]['first_name'];
 
-                        if ($txt == "привет" || "начать" && $conversation_message_id == 1){
+                        if ($txt == ("Привет" || "Начать") && $conversation_message_id == 1){
                             // отправляем сообщение приветствие
                             $vk = new VKApiClient('5.101');
                             $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
