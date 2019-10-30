@@ -38,7 +38,7 @@ class HomeController extends Controller
 
                 case 'message_new':
 
-                    try{
+
                         $object = $vk_callback_event['object'];
                         $user_id = $object['from_id'];
                         $txt =  $object['text'];
@@ -67,16 +67,6 @@ class HomeController extends Controller
 
                             echo 'ok';
                             break;
-                    }catch (\VK\Exceptions\VKApiException $e){
-                        $vk = new VKApiClient('5.101');
-                        $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
-                            'user_id' => $user_id,
-                            'message' => "Неверная команда! \n Вот список команд: \n 1) Что умеешь",
-                            'random_id' => rand(),
-                        ));
-                        echo 'ok';
-                        break;
-                    }
 
                   }
             } catch (\VK\Exceptions\VKApiException $e){
