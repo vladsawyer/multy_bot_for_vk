@@ -38,12 +38,9 @@ class HomeController extends Controller
 
                 case 'message_new':
 
-
                         $object = $vk_callback_event['object'];
                         $user_id = $object['from_id'];
                         $txt =  $object['text'];
-                        $random_id = $object['random_id'];
-                        $conversation_message_id = $object['conversation_message_id'];
 
                         // получаю его имя
                         $vk = new VKApiClient('5.101');
@@ -57,7 +54,7 @@ class HomeController extends Controller
                             case  "Что умеешь" : $message = "$name скоро допилится функционал и вы сможите: \n 1) переводить текст в голосовые сообщения \n 2) менять голос бота \n 3) добавлять бота в чаты и переводить голосовые сообщения в текст \n 5) возможно многофункциональный переводчик, но это не точно:) \n \n Доброго дня)"; break;
                         }
 
-                            // отправляем сообщение приветствие
+                            // отправляем сообщение
                             $vk = new VKApiClient('5.101');
                             $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
                                 'user_id' => $user_id,
