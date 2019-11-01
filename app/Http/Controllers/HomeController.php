@@ -41,7 +41,7 @@ class HomeController extends Controller
                         $object = $vk_callback_event['object'];
                         $user_id = $object['from_id'];
                         $txt =  $object['text'];
-                        $value_button =  $object['payload']['button'];
+                        $value_button =  $object['payload'] -> button;
 
                         // получаю его имя
                         $vk = new VKApiClient('5.103');
