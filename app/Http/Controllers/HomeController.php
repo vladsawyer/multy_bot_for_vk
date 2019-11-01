@@ -44,7 +44,7 @@ class HomeController extends Controller
                         $value_button =  $object['payload']['button'];
 
                         // получаю его имя
-                        $vk = new VKApiClient('5.101');
+                        $vk = new VKApiClient('5.103');
                         $response = $vk->users()->get(getenv('VK_TOKEN'), array(
                             'user_ids' => [$user_id],
                         ));
@@ -85,12 +85,16 @@ class HomeController extends Controller
                             case "back_index" :
                                 $message = "";
                                 $value_keyboard = $keyboard_index;
+                                break;
 
-                            default: $message = "Я вас не понял! Почему? \n 1) Неверная команда \n 2) Слишком длинный текст для синтеза речи \n 3) Аудио длиннее 30 сек для распознования речи"; break;
+                            default:
+                                $message = "Я вас не понял! Почему? \n 1) Неверная команда \n 2) Слишком длинный текст для синтеза речи \n 3) Аудио длиннее 30 сек для распознования речи";
+                                $value_keyboard = $keyboard_index;
+                            break;
                         }
 
                             // отправляем сообщение
-                            $vk = new VKApiClient('5.101');
+                            $vk = new VKApiClient('5.103');
                             $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
                                 'user_id' => $user_id,
                                 'message' => $message,
