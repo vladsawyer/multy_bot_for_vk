@@ -175,10 +175,16 @@ class HomeController extends Controller
                         $object = $vk_callback_event['object']['message'] ?? [];
                         $user_id = $object['from_id'] ?? 0;
                         $txt = $object['text'] ?? "";
-                        $payload = json_decode($object['payload'], true);
-                        $value_button = $payload['button'];
-                        $value_parametr_1 = $payload['parametr_1'];
-                        $this->getlog(json_encode($payload));
+
+                        if (isset($object['payload'])){
+                            $payload = json_decode($object['payload'], true);
+                            $value_button = $payload['button'];
+                            $value_parametr_1 = $payload['parametr_1'];
+                            $this->getlog(json_encode($payload));
+                        } else{
+                            $payload  = null;
+                        }
+
 
 
                         // получаю его имя
