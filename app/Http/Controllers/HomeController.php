@@ -249,7 +249,7 @@ class HomeController extends Controller
 //                                        $send_value_keyboard = $keyboard_index;
 //                                        break;
 //                                    }
-                        $send_value_keyboard = $keyboard_index;
+                        $send_value_keyboard = $keyboard_speech_synthesis_voice;
                         $message = "тест";
 
                                         // отправляем сообщение
