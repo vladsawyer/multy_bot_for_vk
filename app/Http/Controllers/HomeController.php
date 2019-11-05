@@ -83,7 +83,7 @@ class HomeController extends Controller
                                     [
                                         "action" => [
                                             "type" => "text",
-                                            "payload" => "{\"button\": \"speech_synthesis\", \"parametr_1\": \"voice\"}",
+                                            "payload" => json_encode(["button" => "speech_synthesis",  "parametr_1" => "voice"]),
                                             "label" => "Сменить голос"
                                         ],
                                         "color" => "positive"
@@ -94,7 +94,7 @@ class HomeController extends Controller
                                         "action" => [
                                             "type" => "text",
                                             "payload" => "{\"button\": \"back_index\"}",
-                                            "label" => "🤖Назад"
+                                            "label" => "Назад"
                                         ],
                                         "color" => "negative"
                                     ],
@@ -112,7 +112,7 @@ class HomeController extends Controller
                                     [
                                         "action" => [
                                             "type" => "text",
-                                            "payload" => "{\"button\": \"speech_synthesis\", \"parametr_1\": \"voice\", \"parametr_2\": \"voice_man\"}",
+                                            "payload" => json_encode(["button" => "speech_synthesis", "parametr_1" => "voice", "parametr_2" => "voice_man"]),
                                             "label" => "🗣 Мужчина"
                                         ],
                                         "color" => "positive"
@@ -120,7 +120,7 @@ class HomeController extends Controller
                                     [
                                         "action" => [
                                             "type" => "text",
-                                            "payload" => "{\"button\": \"speech_synthesis\", \"parametr_1\": \"voice\", \"parametr_2\": \"voice_woman\"}",
+                                            "payload" => json_encode(["button" => "speech_synthesis", "parametr_1" => "voice", "parametr_2" => "voice_woman"]),
                                             "label" => "🗣 Женщина"
                                         ],
                                         "color" => "positive"
@@ -130,8 +130,8 @@ class HomeController extends Controller
                                     [
                                         "action" => [
                                             "type" => "text",
-                                            "payload" => "{\"button\": \"speech_synthesis\", \"parametr_1\": \"voice\", \"parametr_2\": \"back_speech_synthesis\"}",
-                                            "label" => "🤖Отмена"
+                                            "payload" => json_encode(["button" => "speech_synthesis", "parametr_1" => "voice", "parametr_2" => "back_speech_synthesis"]),
+                                            "label" => "Отмена"
                                         ],
                                         "color" => "negative"
                                     ],
@@ -149,7 +149,7 @@ class HomeController extends Controller
                                     [
                                         "action" => [
                                             "type" => "text",
-                                            "payload" => "{\"button\": \"speech_recognition\", \"parametr_1\": \"speech_recognition_instructions\"}",
+                                            "payload" =>  json_encode(["button" => "speech_recognition",  "parametr_1" => "speech_recognition_instructions"]),
                                             "label" => "Как добавить бота в беседу"
                                         ],
                                         "color" => "positive"
