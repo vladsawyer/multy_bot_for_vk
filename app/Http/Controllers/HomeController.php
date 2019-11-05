@@ -133,7 +133,8 @@ class HomeController extends Controller
                                         [
                                             "action" => [
                                                 "type" => "text",
-                                                "payload" => json_encode([ "button" => "voice", "parametr_1" => "back_speech_synthesis"]),
+//                                                "payload" => json_encode([ "button" => "voice", "parametr_1" => "back_speech_synthesis"]),
+                                                "payload" => "{\"button\": \"back_index\"}",
                                                 "label" => "Назад"
                                             ],
                                             "color" => "negative"
@@ -227,10 +228,10 @@ class HomeController extends Controller
                                 $message = "";
                                 $send_value_keyboard = $keyboard_speech_synthesis_voice;
                                 switch ($value_parametr_1){
-                                    case "back_speech_synthesis":
-                                        $message = "";
-                                        $send_value_keyboard = $keyboard_speech_synthesis;
-                                        break;
+//                                    case "back_speech_synthesis":
+//                                        $message = "";
+//                                        $send_value_keyboard = $keyboard_speech_synthesis;
+//                                        break;
                                     case "voice_man":
                                         $message  = "Смена голоса будет доступна в последнию очередь, Выбран голос: Мужчина";
                                         break;
@@ -238,7 +239,6 @@ class HomeController extends Controller
                                         $message  = "Смена голоса будет доступна в последнию очередь, Выбран голос: Женщина";
                                         break;
                                 }
-                                break;
                                 break;
 
                             case "history_day":
