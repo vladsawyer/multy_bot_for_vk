@@ -179,7 +179,7 @@ class HomeController extends Controller
                         if (isset($object['payload'])){
                             $payload = json_decode($object['payload'], true);
                             $value_button = $payload['button'];
-                            $value_parametr_1 = $payload['parametr_1'];
+//                            $value_parametr_1 = $payload['parametr_1'];
                             $this->getlog(json_encode($payload));
                         } else{
                             $payload  = null;
