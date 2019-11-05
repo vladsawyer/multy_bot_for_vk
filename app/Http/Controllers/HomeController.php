@@ -38,9 +38,9 @@ class HomeController extends Controller
 
                 case 'message_new':
                     try {
-                        $object = $vk_callback_event['object'];
-                        $user_id = $object['from_id'];
-                        $txt = $object['text'];
+                        $object = $vk_callback_event['object'] ?? [];
+                        $user_id = $object['from_id'] ?? 0;
+                        $txt = $object['text'] ?? "";
 
 
                         // получаю его имя
@@ -186,8 +186,10 @@ class HomeController extends Controller
 
 
 
-                        if (isset($object['payload']["button"])) {
-                            $value_button = $object['payload']["button"];
+                        if (isset($object['payload'])) {
+                            $payload = json_decode($object['payload'], true);
+                            $value_button = $payload['button'];
+
                         switch ($value_button) {
                             case  "start" :
                                 $message = "Добро пожаловать $name! \n Я Мульти голосовой бот, разработчик [vladislav_nep | Непомнящих Владислав], у меня есть свой сайт, его найдете в ссылках. \n Что я умею: \n 1️⃣ переводить текст в голосовые сообщения  \n 2️⃣ Менять голос \n 3️⃣ Переводить голосовые сообщения в текст \n 4️⃣ Добавлять в чаты для автоматического перевода голосовых сообщений в текст \n 5️⃣ Повесилить вас историей для! \n Если не видите кнопок, то используйте цифры как команды. \n \n Надеюсь я вам помогу или доставлю удовольствие!";
