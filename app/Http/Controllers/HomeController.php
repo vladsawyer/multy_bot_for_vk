@@ -239,6 +239,7 @@ class HomeController extends Controller
                                         break;
                                 }
                                 break;
+                                break;
 
                             case "history_day":
                                 $message = "В разработке";
