@@ -70,29 +70,29 @@
         [
             "one_time" => false,
             "buttons" => [
+//                [
+//                    [
+//                        "action" => [
+//                            "type" => "text",
+//                            "payload" => "{\"button\": \"voice_man\"}",
+//                            "label" => "🗣 Мужчина"
+//                        ],
+//                        "color" => "positive"
+//                    ],
+//                    [
+//                        "action" => [
+//                            "type" => "text",
+//                            "payload" => "{\"button\": \"voice_woman\"}",
+//                            "label" => "🗣 Женщина"
+//                        ],
+//                        "color" => "positive"
+//                    ]
+//                ],
                 [
                     [
                         "action" => [
                             "type" => "text",
-                            "payload" => "{\"button\": \"voice_man\"}",
-                            "label" => "🗣 Мужчина"
-                        ],
-                        "color" => "positive"
-                    ],
-                    [
-                        "action" => [
-                            "type" => "text",
-                            "payload" => "{\"button\": \"voice_woman\"}",
-                            "label" => "🗣 Женщина"
-                        ],
-                        "color" => "positive"
-                    ]
-                ],
-                [
-                    [
-                        "action" => [
-                            "type" => "text",
-                            "payload" => "{\"button\": \"back_index\"}",
+                            "payload" => "{\"button\": \"back_speech_synthesis\"}",
                             "label" => "🔙 🤖Назад"
                         ],
                         "color" => "negative"
@@ -130,3 +130,30 @@
                 ]
 
             ];
+
+        $keyboard_speech_synthesis_back = [
+            "one_time" => false,
+            "buttons" => [
+                [
+                    [
+                        "action" => [
+                            "type" => "text",
+                            "payload" => "{\"button\": \"voice\"}",
+                            "label" => "🗣Сменить голос"
+                        ],
+                        "color" => "positive"
+                    ]
+                ],
+                [
+                    [
+                        "action" => [
+                            "type" => "text",
+                            "payload" => "{\"button\": \"back_index\"}",
+                            "label" => "🔙 🤖Назад"
+                        ],
+                        "color" => "negative"
+                    ],
+                ]
+            ]
+
+        ];

@@ -37,11 +37,11 @@ class HomeController extends Controller
                     break;
 
                 case 'message_new':
-                    try{
+                    try {
                         $object = $vk_callback_event['object'];
                         $user_id = $object['from_id'];
-                        $txt =  $object['text'];
-                        $value_button =  $object['payload'] -> button;
+                        $txt = $object['text'];
+
 
                         // получаю его имя
                         $vk = new VKApiClient('5.103');
@@ -50,191 +50,73 @@ class HomeController extends Controller
                         ));
                         $name = $response[0]['first_name'];
 
-//                        require_once 'keyboards.php';
+                        require_once 'app/Http/Controllers/keyboards.php';
 
-                        //главное меню
-                        $keyboard_index =
-                            [
-                                "one_time" => false,
-                                "buttons" => [
-                                    [
-                                        [
-                                            "action" => [
-                                                "type" => "text",
-                                                "payload" => "{\"button\": \"speech_recognition\"}",
-                                                "label" => "🗣 Распознование речи"
-                                            ],
-                                            "color" => "positive"
-                                        ],
-                                        [
-                                            "action" => [
-                                                "type" => "text",
-                                                "payload" => "{\"button\": \"speech_synthesis\"}",
-                                                "label" => "🤖 🤖Синтез речи"
-                                            ],
-                                            "color" => "positive"
-                                        ],
-                                    ],
-                                    [
-                                        [
-                                            "action" => [
-                                                "type" => "text",
-                                                "payload" => "{\"button\": \"history_day\"}",
-                                                "label" => "🗣История дня"
-                                            ],
-                                            "color" => "positive"
-                                        ],
-                                    ]
-                                ]
+                        if (isset($object['payload']["button"])) {
+                            $value_button = $object['payload']["button"];
+                        } else {
+                            $value_button = null;
 
-                            ];
+                        }
 
-                        // меню клавиатура синтеза речи
-                        $keyboard_speech_synthesis =
-                            [
-                                "one_time" => false,
-                                "buttons" => [
-                                    [
-                                        [
-                                            "action" => [
-                                                "type" => "text",
-                                                "payload" => "{\"button\": \"voice\"}",
-                                                "label" => "🗣Сменить голос"
-                                            ],
-                                            "color" => "positive"
-                                        ]
-                                    ],
-                                    [
-                                        [
-                                            "action" => [
-                                                "type" => "text",
-                                                "payload" => "{\"button\": \"back_index\"}",
-                                                "label" => "🔙 🤖Назад"
-                                            ],
-                                            "color" => "negative"
-                                        ],
-                                    ]
-                                ]
-
-                            ];
-
-                        // меню клавиатура синтеза речи для смены голоса
-                        $keyboard_speech_synthesis_voice =
-                            [
-                                "one_time" => false,
-                                "buttons" => [
-                                    [
-                                        [
-                                            "action" => [
-                                                "type" => "text",
-                                                "payload" => "{\"button\": \"voice_man\"}",
-                                                "label" => "🗣 Мужчина"
-                                            ],
-                                            "color" => "positive"
-                                        ],
-                                        [
-                                            "action" => [
-                                                "type" => "text",
-                                                "payload" => "{\"button\": \"voice_woman\"}",
-                                                "label" => "🗣 Женщина"
-                                            ],
-                                            "color" => "positive"
-                                        ]
-                                    ],
-                                    [
-                                        [
-                                            "action" => [
-                                                "type" => "text",
-                                                "payload" => "{\"button\": \"back_index\"}",
-                                                "label" => "🔙 🤖Назад"
-                                            ],
-                                            "color" => "negative"
-                                        ],
-                                    ]
-                                ]
-
-                            ];
-
-                        $keyboard_speech_recognition =
-                            [
-                                "one_time" => false,
-                                "buttons" => [
-                                    [
-                                        [
-                                            "action" => [
-                                                "type" => "text",
-                                                "payload" => "{\"button\": \"speech_recognition_instructions\"}",
-                                                "label" => "🗣Как добавить бота в беседу"
-                                            ],
-                                            "color" => "positive"
-                                        ],
-
-                                    ],
-                                    [
-                                        [
-                                            "action" => [
-                                                "type" => "text",
-                                                "payload" => "{\"button\": \"back_index\"}",
-                                                "label" => "🔙 🤖Назад"
-                                            ],
-                                            "color" => "negative"
-                                        ],
-                                    ]
-                                ]
-
-                            ];
-
-
-                        switch ( $value_button || $txt){
+                        switch ($value_button) {
                             case  "start" :
-                                $message = "Добро пожаловать $name! \n Я Мульти голосовой бот, разработанный [vladislav_nep | Непомнящих Владиславом], у меня есть свой сайт, его найдете в ссылках. \n Что я умею: \n 1️⃣ переводить текст в голосовые сообщения \n 2️⃣ Менять голос \n 3️⃣ Переводить голосовые сообщения в текст \n 4️⃣ Добавлять в чаты для автоматического перевода голосовых сообщений в текст \n 5️⃣ Повесилить вас историей для! \n \n Надеюсь я вам помогу или доставлю удовольствие!";
-                                $value_keyboard = $keyboard_index;
+                                $message = "Добро пожаловать $name! \n Я Мульти голосовой бот, разработчик [vladislav_nep | Непомнящих Владислав], у меня есть свой сайт, его найдете в ссылках. \n Что я умею: \n 1️⃣ переводить текст в голосовые сообщения  \n 2️⃣ Менять голос \n 3️⃣ Переводить голосовые сообщения в текст \n 4️⃣ Добавлять в чаты для автоматического перевода голосовых сообщений в текст \n 5️⃣ Повесилить вас историей для! \n Если не видите кнопок, то используйте цифры как команды. \n \n Надеюсь я вам помогу или доставлю удовольствие!";
+                                $send_value_keyboard = $keyboard_index;
                                 break;
 
                             case  "speech_recognition" :
-                                $message = "В разработке";
-                                $value_keyboard = $keyboard_speech_recognition;
+                                switch ($value_button) {
+                                    case "back_index" :
+                                        $message = "";
+                                        $send_value_keyboard = $keyboard_index;
+                                        break;
+                                    default:
+                                        $message = "Отправьте голосовое сообщение до 30 секунд! В разработке)";
+                                        $send_value_keyboard = $keyboard_speech_synthesis;
+                                        break;
+                                }
                                 break;
 
                             case  "speech_synthesis" :
-                                $message = "Синтез речи запущен, в разработке)";
-                                $value_keyboard = $keyboard_speech_synthesis;
-
-//                                return  redirect() -> route('Speech_SynthesisController@index');
+                                switch ($value_button) {
+                                    case "back_index" :
+                                        $message = "";
+                                        $send_value_keyboard = $keyboard_index;
+                                        break;
+                                    case "voice" :
+                                        $message = "Смена голоса будет доступна в последнию очередь";
+                                        $send_value_keyboard = $keyboard_speech_synthesis_back;
+                                        break;
+                                    default:
+                                        $message = "Синтез речи запущен, в разработке)";
+                                        $send_value_keyboard = $keyboard_speech_synthesis;
+                                }
                                 break;
 
-                            case  "voice" :
-                                $message = "в разработке";
-                                $value_keyboard = $keyboard_speech_synthesis_voice;
-                                break;
+                                case  "history_day" :
+                                    $message = "В разработке";
+                                        $send_value_keyboard = "";
+                                        break;
 
-                            case  "history_day" :
-                                $message = "В разработке";
-                                $value_keyboard = "";
-                                break;
 
-                            case "back_index" :
-                                $message = "";
-                                $value_keyboard = $keyboard_index;
-                                break;
+                                    default:
+                                        $message = "Я вас не понял! Почему? \n 1) Команды осуществляются только при помощи кнопок \n 2) Слишком длинный текст для синтеза речи \n 3) Аудио длиннее 30 сек для распознования речи";
+                                        $send_value_keyboard = $keyboard_index;
+                                        break;
+                                    }
 
-                            default:
-                                $message = "Я вас не понял! Почему? \n 1) Неверная команда \n 2) Слишком длинный текст для синтеза речи \n 3) Аудио длиннее 30 сек для распознования речи";
-                                $value_keyboard = $keyboard_index;
-                            break;
-                        }
+                                        // отправляем сообщение
+                                        $vk = new VKApiClient('5.103');
+                                        $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
+                                            'user_id' => $user_id,
+                                            'message' => $message,
+                                            'keyboard' => json_encode($send_value_keyboard),
+                                            'random_id' => rand(),
+                                        ));
+                                        echo 'ok';
+                                        break;
 
-                            // отправляем сообщение
-                            $vk = new VKApiClient('5.103');
-                            $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
-                                'user_id' => $user_id,
-                                'message' => $message,
-                                'keyboard' => json_encode($value_keyboard),
-                                'random_id' => rand(),
-                            ));
-
-                            echo 'ok';
-                            break;
                     } catch (\VK\Exceptions\VKApiException $e){
                         $this -> getlog($e -> getMessage());
                     }
