@@ -49,7 +49,7 @@ class HomeController extends Controller
                                         [
                                             "action" => [
                                                 "type" => "text",
-                                                "payload" => "{\"button\": \"speech_recognition\"}",
+                                                "payload" => "{\"command\": \"speech_recognition\"}",
                                                 "label" => "Распознование речи"
                                             ],
                                             "color" => "positive"
@@ -57,7 +57,7 @@ class HomeController extends Controller
                                         [
                                             "action" => [
                                                 "type" => "text",
-                                                "payload" => "{\"button\": \"speech_synthesis\" }",
+                                                "payload" => "{\"command\": \"speech_synthesis\" }",
                                                 "label" => "Синтез речи"
                                             ],
                                             "color" => "positive"
@@ -67,7 +67,7 @@ class HomeController extends Controller
                                         [
                                             "action" => [
                                                 "type" => "text",
-                                                "payload" => "{\"button\": \"history_day\"}",
+                                                "payload" => "{\"command\": \"history_day\"}",
                                                 "label" => "История дня"
                                             ],
                                             "color" => "positive"
@@ -86,7 +86,7 @@ class HomeController extends Controller
                                         [
                                             "action" => [
                                                 "type" => "text",
-                                                "payload" => "{\"button\": \"voice\"}",
+                                                "payload" => "{\"command\": \"voice\"}",
                                                 "label" => "Сменить голос"
                                             ],
                                             "color" => "positive"
@@ -96,7 +96,7 @@ class HomeController extends Controller
                                         [
                                             "action" => [
                                                 "type" => "text",
-                                                "payload" => "{\"button\": \"back_index\"}",
+                                                "payload" => "{\"command\": \"back_index\"}",
                                                 "label" => "Главная"
                                             ],
                                             "color" => "negative"
@@ -115,7 +115,7 @@ class HomeController extends Controller
                                         [
                                             "action" => [
                                                 "type" => "text",
-                                                "payload" => json_encode(["button" => "voice", "parametr_1" => "voice_man"]),
+                                                "payload" => json_encode(["command" => "voice", "parametr_1" => "voice_man"]),
                                                 "label" => "Мужчина"
                                             ],
                                             "color" => "positive"
@@ -123,7 +123,7 @@ class HomeController extends Controller
                                         [
                                             "action" => [
                                                 "type" => "text",
-                                                "payload" => json_encode(["button" => "voice", "parametr_1" => "voice_woman"]),
+                                                "payload" => json_encode(["command" => "voice", "parametr_1" => "voice_woman"]),
                                                 "label" => "Женщина"
                                             ],
                                             "color" => "positive"
@@ -133,8 +133,8 @@ class HomeController extends Controller
                                         [
                                             "action" => [
                                                 "type" => "text",
-//                                                "payload" => json_encode([ "button" => "voice", "parametr_1" => "back_speech_synthesis"]),
-                                                "payload" => "{\"button\": \"back_index\"}",
+                                                "payload" => json_encode([ "command" => "voice", "parametr_1" => "back_speech_synthesis"]),
+//                                                "payload" => "{\"command\": \"back_index\"}",
                                                 "label" => "Назад"
                                             ],
                                             "color" => "negative"
@@ -153,7 +153,7 @@ class HomeController extends Controller
                                         [
                                             "action" => [
                                                 "type" => "text",
-                                                "payload" =>  json_encode(["button" => "speech_recognition_instructions"]),
+                                                "payload" =>  json_encode(["command" => "speech_recognition_instructions"]),
                                                 "label" => "Как добавить бота в беседу"
                                             ],
                                             "color" => "positive"
@@ -164,7 +164,7 @@ class HomeController extends Controller
                                         [
                                             "action" => [
                                                 "type" => "text",
-                                                "payload" => "{\"button\": \"back_index\"}",
+                                                "payload" => "{\"command\": \"back_index\"}",
                                                 "label" => "🔙Главная"
                                             ],
                                             "color" => "negative"
@@ -180,7 +180,7 @@ class HomeController extends Controller
 
                         if (isset($object['payload'])){
                             $payload = json_decode($object['payload'], true);
-                            $value_button = $payload['button'];
+                            $value_command = $payload['command'];
                             if (isset($payload['parametr_1'])){
                             $value_parametr_1 = $payload['parametr_1'];
                             }
@@ -198,7 +198,7 @@ class HomeController extends Controller
                         $name = $response[0]['first_name'];
 
 
-                        switch ($value_button) {
+                        switch ($value_command) {
                             case  "start" :
                                 $message = "Добро пожаловать $name! \n Я Мульти голосовой бот, разработчик [vladislav_nep | Непомнящих Владислав], у меня есть свой сайт, его найдете в ссылках. \n Что я умею: \n 1️⃣ переводить текст в голосовые сообщения  \n 2️⃣ Менять голос \n 3️⃣ Переводить голосовые сообщения в текст \n 4️⃣ Добавлять в чаты для автоматического перевода голосовых сообщений в текст \n 5️⃣ Повесилить вас историей для! \n Если не видите кнопок, то используйте цифры как команды. \n \n Надеюсь я вам помогу или доставлю удовольствие!";
                                 $send_value_keyboard = $keyboard_index;
@@ -215,7 +215,7 @@ class HomeController extends Controller
                                 break;
 
                             case "back_index" :
-                                $message = "";
+                                $message = "Выбирете команду";
                                 $send_value_keyboard = $keyboard_index;
                                 break;
 
@@ -225,13 +225,13 @@ class HomeController extends Controller
                                 break;
 
                             case "voice" :
-                                $message = "";
-                                $send_value_keyboard = $keyboard_speech_synthesis_voice;
+//                                $message = "";
+//                                $send_value_keyboard = $keyboard_speech_synthesis_voice;
                                 switch ($value_parametr_1){
-//                                    case "back_speech_synthesis":
-//                                        $message = "";
-//                                        $send_value_keyboard = $keyboard_speech_synthesis;
-//                                        break;
+                                    case "back_speech_synthesis":
+                                        $message = "";
+                                        $send_value_keyboard = $keyboard_speech_synthesis;
+                                        break;
                                     case "voice_man":
                                         $message  = "Смена голоса будет доступна в последнию очередь, Выбран голос: Мужчина";
                                         break;
@@ -241,15 +241,20 @@ class HomeController extends Controller
                                 }
                                 break;
 
+
                             case "history_day":
                                 $message = "В разработке";
                                 $send_value_keyboard = "";
                                 break;
 
                             default:
-                                $message = "Я вас не понял! Почему? \n 1) Команды осуществляются только при помощи кнопок \n 2) Слишком длинный текст для синтеза речи \n 3) Аудио длиннее 30 сек для распознования речи";
-                                $send_value_keyboard = $keyboard_index;
-                                break;
+                                switch ($txt){
+                                    case $txt:
+                                        $message = "Я вас не понял! Почему? \n 1) Команды осуществляются только при помощи кнопок \n 2) Слишком длинный текст для синтеза речи \n 3) Аудио длиннее 30 сек для распознования речи";
+                                        $send_value_keyboard = $keyboard_index;
+                                        break;
+                                }
+
                         }
 
                         // отправляем сообщение
@@ -268,6 +273,7 @@ class HomeController extends Controller
                     }
 
                   }
+        echo 'ok';
 
     }
 
