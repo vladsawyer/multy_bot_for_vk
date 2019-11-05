@@ -50,15 +50,144 @@ class HomeController extends Controller
                         ));
                         $name = $response[0]['first_name'];
 
-                        require_once 'app/Http/Controllers/keyboards.php';
+
+                        //главное меню
+                        $keyboard_index =
+                            [
+                                "one_time" => false,
+                                "buttons" => [
+                                    [
+                                        [
+                                            "action" => [
+                                                "type" => "text",
+                                                "payload" => "{\"button\": \"speech_recognition\"}",
+                                                "label" => "Распознование речи"
+                                            ],
+                                            "color" => "positive"
+                                        ],
+                                        [
+                                            "action" => [
+                                                "type" => "text",
+                                                "payload" => "{\"button\": \"speech_synthesis\"}",
+                                                "label" => "🤖Синтез речи"
+                                            ],
+                                            "color" => "positive"
+                                        ],
+                                    ],
+                                    [
+                                        [
+                                            "action" => [
+                                                "type" => "text",
+                                                "payload" => "{\"button\": \"history_day\"}",
+                                                "label" => "История дня"
+                                            ],
+                                            "color" => "positive"
+                                        ],
+                                    ]
+                                ]
+
+                            ];
+
+                        // меню клавиатура синтеза речи
+                        $keyboard_speech_synthesis =
+                            [
+                                "one_time" => false,
+                                "buttons" => [
+                                    [
+                                        [
+                                            "action" => [
+                                                "type" => "text",
+                                                "payload" => "{\"button\": \"voice\"}",
+                                                "label" => "Сменить голос"
+                                            ],
+                                            "color" => "positive"
+                                        ]
+                                    ],
+                                    [
+                                        [
+                                            "action" => [
+                                                "type" => "text",
+                                                "payload" => "{\"button\": \"back_index\"}",
+                                                "label" => "🔙 🤖Назад"
+                                            ],
+                                            "color" => "negative"
+                                        ],
+                                    ]
+                                ]
+
+                            ];
+
+                        // меню клавиатура синтеза речи для смены голоса
+                        $keyboard_speech_synthesis_voice =
+                            [
+                                "one_time" => false,
+                                "buttons" => [
+//                [
+//                    [
+//                        "action" => [
+//                            "type" => "text",
+//                            "payload" => "{\"button\": \"voice_man\"}",
+//                            "label" => "🗣 Мужчина"
+//                        ],
+//                        "color" => "positive"
+//                    ],
+//                    [
+//                        "action" => [
+//                            "type" => "text",
+//                            "payload" => "{\"button\": \"voice_woman\"}",
+//                            "label" => "🗣 Женщина"
+//                        ],
+//                        "color" => "positive"
+//                    ]
+//                ],
+                                    [
+                                        [
+                                            "action" => [
+                                                "type" => "text",
+                                                "payload" => "{\"button\": \"back_speech_synthesis\"}",
+                                                "label" => "🔙 🤖Назад"
+                                            ],
+                                            "color" => "negative"
+                                        ],
+                                    ]
+                                ]
+
+                            ];
+
+                        // клавиатура распознования речи
+                        $keyboard_speech_recognition =
+                            [
+                                "one_time" => false,
+                                "buttons" => [
+                                    [
+                                        [
+                                            "action" => [
+                                                "type" => "text",
+                                                "payload" => "{\"button\": \"speech_recognition_instructions\"}",
+                                                "label" => "Как добавить бота в беседу"
+                                            ],
+                                            "color" => "positive"
+                                        ],
+
+                                    ],
+                                    [
+                                        [
+                                            "action" => [
+                                                "type" => "text",
+                                                "payload" => "{\"button\": \"back_index\"}",
+                                                "label" => "🔙 🤖Назад"
+                                            ],
+                                            "color" => "negative"
+                                        ],
+                                    ]
+                                ]
+
+                            ];
+
+
 
                         if (isset($object['payload']["button"])) {
                             $value_button = $object['payload']["button"];
-                        } else {
-                            $value_button = null;
-
-                        }
-
                         switch ($value_button) {
                             case  "start" :
                                 $message = "Добро пожаловать $name! \n Я Мульти голосовой бот, разработчик [vladislav_nep | Непомнящих Владислав], у меня есть свой сайт, его найдете в ссылках. \n Что я умею: \n 1️⃣ переводить текст в голосовые сообщения  \n 2️⃣ Менять голос \n 3️⃣ Переводить голосовые сообщения в текст \n 4️⃣ Добавлять в чаты для автоматического перевода голосовых сообщений в текст \n 5️⃣ Повесилить вас историей для! \n Если не видите кнопок, то используйте цифры как команды. \n \n Надеюсь я вам помогу или доставлю удовольствие!";
@@ -71,9 +200,14 @@ class HomeController extends Controller
                                         $message = "";
                                         $send_value_keyboard = $keyboard_index;
                                         break;
+                                    case "speech_recognition_instructions":
+                                        $message = "Здесь будет инструкция, пока лень писать)";
+                                        $send_value_keyboard = $keyboard_speech_recognition;
+                                        break;
+
                                     default:
                                         $message = "Отправьте голосовое сообщение до 30 секунд! В разработке)";
-                                        $send_value_keyboard = $keyboard_speech_synthesis;
+                                        $send_value_keyboard = $keyboard_speech_recognition;
                                         break;
                                 }
                                 break;
@@ -86,7 +220,10 @@ class HomeController extends Controller
                                         break;
                                     case "voice" :
                                         $message = "Смена голоса будет доступна в последнию очередь";
-                                        $send_value_keyboard = $keyboard_speech_synthesis_back;
+                                        $send_value_keyboard = $keyboard_speech_synthesis_voice;
+                                        break;
+                                    case "back_speech_synthesis":
+                                        $send_value_keyboard = $keyboard_speech_synthesis;
                                         break;
                                     default:
                                         $message = "Синтез речи запущен, в разработке)";
@@ -105,6 +242,11 @@ class HomeController extends Controller
                                         $send_value_keyboard = $keyboard_index;
                                         break;
                                     }
+                        } else {
+                            $message = "Я реагирую только на кнопки!";
+                            $send_value_keyboard = $keyboard_index;
+
+                        }
 
                                         // отправляем сообщение
                                         $vk = new VKApiClient('5.103');
