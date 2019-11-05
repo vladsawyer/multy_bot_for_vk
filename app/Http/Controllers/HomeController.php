@@ -149,7 +149,7 @@ class HomeController extends Controller
                                     [
                                         "action" => [
                                             "type" => "text",
-                                            "payload" =>  json_encode(["button" => "speech_recognition_instructions"),
+                                            "payload" =>  json_encode(["button" => "speech_recognition_instructions"]),
                                             "label" => "Как добавить бота в беседу"
                                         ],
                                         "color" => "positive"
