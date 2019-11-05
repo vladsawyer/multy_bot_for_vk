@@ -24,7 +24,7 @@ class HomeController extends Controller
     {
         header("HTTP/1.1 200 OK");
         $vk_callback_event =  json_decode(file_get_contents("php://input"), true);
-        $this -> getlog(json_encode($vk_callback_event));
+
 
         if ($vk_callback_event['secret'] !== getenv('VK_SECRET_TOKEN')) {
             return response('nioh');
@@ -38,7 +38,7 @@ class HomeController extends Controller
 
                 case 'message_new':
                     try {
-                        $object = $vk_callback_event['object'] ?? [];
+                        $object = $vk_callback_event['object']['message'] ?? [];
                         $user_id = $object['from_id'] ?? 0;
                         $txt = $object['text'] ?? "";
 
@@ -189,6 +189,7 @@ class HomeController extends Controller
                         if (isset($object['payload'])) {
                             $payload = json_decode($object['payload'], true);
                             $value_button = $payload['button'];
+                            $this -> getlog(json_encode($payload));
 
                         switch ($value_button) {
                             case  "start" :
