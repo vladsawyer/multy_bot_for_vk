@@ -170,7 +170,7 @@ class HomeController extends Controller
                             ]
 
                         ];
-                    try {
+
                         $object = $vk_callback_event['object']['message'] ?? [];
                         $user_id = $object['from_id'] ?? 0;
                         $txt = $object['text'] ?? "";
@@ -209,7 +209,7 @@ class HomeController extends Controller
                                 break;
 
                             case "back_index" :
-                                $message = "Выбирете команду";
+                                $message = "Кликай на кнопку";
                                 $send_value_keyboard = $keyboard_index;
                                 break;
 
@@ -257,7 +257,7 @@ class HomeController extends Controller
                                 break;
 
                         }
-
+                    try {
                         // отправляем сообщение
                         $vk = new VKApiClient('5.103');
                         $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
