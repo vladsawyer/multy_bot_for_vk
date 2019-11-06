@@ -84,7 +84,7 @@ class HomeController extends Controller
                                     [
                                         "action" => [
                                             "type" => "text",
-                                            "payload" => "{\"command\": \"voice\"}",
+                                            "payload" => json_encode([ "command" => "voice"]),
                                             "label" => "Сменить голос"
                                         ],
                                         "color" => "positive"
@@ -162,7 +162,7 @@ class HomeController extends Controller
                                         "action" => [
                                             "type" => "text",
                                             "payload" => "{\"command\": \"back_index\"}",
-                                            "label" => "🔙Главная"
+                                            "label" => "Главная"
                                         ],
                                         "color" => "negative"
                                     ],
@@ -219,12 +219,12 @@ class HomeController extends Controller
                                 break;
 
                             case "back_speech_synthesis":
-                                $message = "";
+                                $message = "Синтез речи запущен, в разработке";
                                 $send_value_keyboard = $keyboard_speech_synthesis;
                                 break;
 
                             case "voice" :
-                                $message = "";
+                                $message = "Выберите голос";
                                 $send_value_keyboard = $keyboard_speech_synthesis_voice;
                                 break;
 
