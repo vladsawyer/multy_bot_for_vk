@@ -272,7 +272,6 @@ class HomeController extends Controller
                     }
 
                   }
-                    echo 'ok';
 
     }
 
