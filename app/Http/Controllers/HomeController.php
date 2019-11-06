@@ -248,12 +248,18 @@ class HomeController extends Controller
                                 break;
 
                             default:
-                                switch ($txt){
-                                    case $txt:
-                                        $message = "Я вас не понял! Почему? \n 1) Команды осуществляются только при помощи кнопок \n 2) Слишком длинный текст для синтеза речи \n 3) Аудио длиннее 30 сек для распознования речи";
-                                        $send_value_keyboard = $keyboard_index;
-                                        break;
-                                }
+                                $message = "Я вас не понял! Почему? \n 1) Команды осуществляются только при помощи кнопок \n 2) Слишком длинный текст для синтеза речи \n 3) Аудио длиннее 30 сек для распознования речи";
+                                $send_value_keyboard = $keyboard_index;
+                                // отправляем сообщение
+                                $vk = new VKApiClient('5.103');
+                                $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
+                                    'user_id' => $user_id,
+                                    'message' => $message,
+                                    'keyboard' => json_encode($send_value_keyboard),
+                                    'random_id' => rand(),
+                                ));
+                                echo 'ok';
+                                break;
 
                         }
 
