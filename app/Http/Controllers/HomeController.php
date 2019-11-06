@@ -232,9 +232,11 @@ class HomeController extends Controller
                                 switch ($payload['parametr_1']){
                                     case "voice_man":
                                         $message  = "Смена голоса будет доступна в последнию очередь \n Выбран голос: Мужчина";
+                                        $send_value_keyboard = "";
                                         break;
                                     case "voice_woman":
                                         $message  = "Смена голоса будет доступна в последнию очередь \n Выбран голос: Женщина";
+                                        $send_value_keyboard = "";
                                         break;
                                     default:
                                         $message = "Тип не распознан";
