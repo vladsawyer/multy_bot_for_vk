@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use VK\Client\VKApiClient;
+use App\Http\Controllers\Speech_RecognitionController;
 
 class HomeController extends Controller
 {
@@ -17,14 +17,10 @@ class HomeController extends Controller
 //        $this->middleware('auth');
 //    }
 
-    /**
-     * @return string
-     */
     public function index()
     {
         header("HTTP/1.1 200 OK");
         $vk_callback_event =  json_decode(file_get_contents("php://input"), true);
-
 
         if ($vk_callback_event['secret'] !== getenv('VK_SECRET_TOKEN')) {
             return response('nioh');
@@ -186,6 +182,7 @@ class HomeController extends Controller
 
                         // получаю его имя
                         $vk = new VKApiClient('5.103');
+
                         $response = $vk->users()->get(getenv('VK_TOKEN'), array(
                             'user_ids' => [$user_id],
                         ));
@@ -280,5 +277,6 @@ class HomeController extends Controller
     function getlog($msg){
         file_put_contents('php://stdout', $msg. "\n");
     }
+
 
 }
