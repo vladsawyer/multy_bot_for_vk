@@ -14,4 +14,11 @@ class UserBot extends Model
     protected $attributes = [
         'voice' => 'man',
     ];
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = ['vk_id', 'voice'];
 }
