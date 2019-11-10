@@ -41,7 +41,6 @@
                 <div class="links">
                     <a href="https://vk.com/multyvoicebot">Vk</a>
                     <a href="https://github.com/VladislavNep/multy_bot_for_vk">GitHub</a>
-                    <a href="{{route('lessons')}}">lessons</a>
                 </div>
             </div>
         </div>
