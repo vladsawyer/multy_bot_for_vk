@@ -234,7 +234,7 @@ class HomeController extends Controller
         if (file_exists($file_name)) {
             return $file_name;
         }
-        fopen($file_name, 'w+');
+        $file_handler = fopen($file_name, 'w+');
 
         $url = "https://tts.api.cloud.yandex.net/speech/v1/tts:synthesize";
         $post = http_build_query(array(
@@ -278,6 +278,9 @@ class HomeController extends Controller
         $this -> getlog(json_decode($response));
 
         curl_close($ch);
+        fclose($file_handler);
+
+        return $file_name;
     }
 
     function SendSpeechKitRecognition(){
@@ -315,6 +318,7 @@ class HomeController extends Controller
         }
 
         fclose($file);
+
     }
 
 
