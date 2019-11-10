@@ -193,11 +193,13 @@ class HomeController extends Controller
 
                                 $message = "проверка и тест";
                                 $send_value_keyboard = "";
+                                break;
 
                             } elseif (isset($vk_callback_event['object']['message']['attachments']) && $vk_callback_event['object']['message']['attachments']['type'] === "audio_message"){
                                 // распознования речи
                                 $message = "потом";
                                 $send_value_keyboard = "";
+                                break;
 
                             }
 
@@ -217,6 +219,7 @@ class HomeController extends Controller
                     } catch (\VK\Exceptions\VKApiException $e){
                         $this -> getlog($e -> getMessage());
                     }
+                    break;
 
                   }
 
@@ -228,6 +231,10 @@ class HomeController extends Controller
 
     function SendSpeechKitSynthesis($txt, $voice){
         $file_name =  public_path('speech_audio').'/audio_'.md5($txt).'.ogg';
+        if (file_exists($file_name)) {
+            return $file_name;
+        }
+        fopen($file_name, 'w+');
 
         $url = "https://tts.api.cloud.yandex.net/speech/v1/tts:synthesize";
         $post = http_build_query(array(
