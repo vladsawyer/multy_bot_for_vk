@@ -227,12 +227,7 @@ class HomeController extends Controller
     }
 
     function SendSpeechKitSynthesis($txt, $voice){
-        define('SPEECH_AUDIO_DIRECTORY', '/public/speech_audio');
-        $file_name = SPEECH_AUDIO_DIRECTORY.'/audio_'.md5($txt).'.ogg';
-        if (file_exists($file_name)) {
-            return $file_name;
-        }
-        $file_handler = fopen($file_name, 'w+');
+        $file_name =  secure_asset('speech_audio').'/audio_'.md5($txt).'.ogg';
 
         $url = "https://tts.api.cloud.yandex.net/speech/v1/tts:synthesize";
         $post = http_build_query(array(
@@ -249,7 +244,7 @@ class HomeController extends Controller
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-        curl_setopt($ch, CURLOPT_FILE, $file_handler);
+
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -277,7 +272,6 @@ class HomeController extends Controller
         $this -> getlog(file_put_contents($file_name, $response));
 
         curl_close($ch);
-        fclose($file_handler);
 
         return $file_name;
     }
