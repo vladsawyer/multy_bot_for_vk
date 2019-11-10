@@ -185,7 +185,8 @@ class HomeController extends Controller
                                 // синтез речи
 
                                 //получаем тип голоса для данного юзера
-                                $voice = UserBot::where('vk_id', $user_id) -> voice;
+                                $user = UserBot::where('vk_id', $user_id) -> first();
+                                $voice = $user -> voice;
 
                                 //отправляем запрос в SpeechKit
                                 $this -> SendSpeechKitSynthesis($txt, $voice);
