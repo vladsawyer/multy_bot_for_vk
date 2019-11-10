@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\UserBot;
 use VK\Client\VKApiClient;
-use App\Http\Controllers\Speech_RecognitionController;
 
 class HomeController extends Controller
 {
@@ -34,45 +34,8 @@ class HomeController extends Controller
                 case 'message_new':
 
                     // клавиатура
-                    //главное меню
+                    // меню главная
                     $keyboard_index =
-                        [
-                            "one_time" => false,
-                            "buttons" => [
-                                [
-                                    [
-                                        "action" => [
-                                            "type" => "text",
-                                            "payload" => "{\"command\": \"speech_recognition\"}",
-                                            "label" => "Распознование речи"
-                                        ],
-                                        "color" => "positive"
-                                    ],
-                                    [
-                                        "action" => [
-                                            "type" => "text",
-                                            "payload" => "{\"command\": \"speech_synthesis\" }",
-                                            "label" => "Синтез речи"
-                                        ],
-                                        "color" => "positive"
-                                    ],
-                                ],
-                                [
-                                    [
-                                        "action" => [
-                                            "type" => "text",
-                                            "payload" => "{\"command\": \"history_day\"}",
-                                            "label" => "История дня"
-                                        ],
-                                        "color" => "positive"
-                                    ],
-                                ]
-                            ]
-
-                        ];
-
-                    // меню клавиатура синтеза речи
-                    $keyboard_speech_synthesis =
                         [
                             "one_time" => false,
                             "buttons" => [
@@ -90,17 +53,18 @@ class HomeController extends Controller
                                     [
                                         "action" => [
                                             "type" => "text",
-                                            "payload" => "{\"command\": \"back_index\"}",
-                                            "label" => "Главная"
+                                            "payload" =>  json_encode(["command" => "speech_recognition_instructions"]),
+                                            "label" => "Как добавить бота в беседу"
                                         ],
-                                        "color" => "negative"
+                                        "color" => "positive"
                                     ],
+
                                 ]
                             ]
 
                         ];
 
-                    // меню клавиатура синтеза речи для смены голоса
+                    // меню для смены голоса
                     $keyboard_speech_synthesis_voice =
                         [
                             "one_time" => false,
@@ -110,7 +74,7 @@ class HomeController extends Controller
                                         "action" => [
                                             "type" => "text",
                                             "payload" => json_encode(["command" => "choice_voice", "parametr_1" => "voice_man"]),
-                                            "label" => "Мужчина"
+                                            "label" => "Филип"
                                         ],
                                         "color" => "positive"
                                     ],
@@ -118,40 +82,10 @@ class HomeController extends Controller
                                         "action" => [
                                             "type" => "text",
                                             "payload" => json_encode(["command" => "choice_voice", "parametr_1" => "voice_woman"]),
-                                            "label" => "Женщина"
+                                            "label" => "Алена"
                                         ],
                                         "color" => "positive"
                                     ]
-                                ],
-                                [
-                                    [
-                                        "action" => [
-                                            "type" => "text",
-                                            "payload" => json_encode([ "command" => "back_speech_synthesis"]),
-                                            "label" => "Назад"
-                                        ],
-                                        "color" => "negative"
-                                    ],
-                                ]
-                            ]
-
-                        ];
-
-                    // клавиатура распознования речи
-                    $keyboard_speech_recognition =
-                        [
-                            "one_time" => false,
-                            "buttons" => [
-                                [
-                                    [
-                                        "action" => [
-                                            "type" => "text",
-                                            "payload" =>  json_encode(["command" => "speech_recognition_instructions"]),
-                                            "label" => "Как добавить бота в беседу"
-                                        ],
-                                        "color" => "positive"
-                                    ],
-
                                 ],
                                 [
                                     [
@@ -166,92 +100,105 @@ class HomeController extends Controller
                             ]
 
                         ];
+
+
                     try {
                         $object = $vk_callback_event['object']['message'] ?? [];
-                        $user_id = $object['from_id'] ?? 0;
+                        $user_id = $object['from_id'];
                         $txt = $object['text'] ?? "";
-
-                        if (isset($object['payload'])){
-                            $payload = json_decode($object['payload'], true);
-                            $this->getlog(json_encode($payload));
-                        } else{
-                            $payload  = null;
-                            $this->getlog(json_encode($vk_callback_event));
-                        }
-
 
                         // получаю его имя
                         $vk = new VKApiClient('5.103');
-
                         $response = $vk->users()->get(getenv('VK_TOKEN'), array(
                             'user_ids' => [$user_id],
                         ));
                         $name = $response[0]['first_name'];
 
+                        if (isset($object['payload'])){
+                            $payload = json_decode($object['payload'], true);
+                            $this->getlog(json_encode($payload));
 
-                        switch ($payload['command']) {
-                            case  "start" :
-                                $message = "Добро пожаловать $name! \n Я MultyVoiceBot, разработчик @vladislav_nep(Непомнящих Владислав), у меня есть свой сайт, его найдете в ссылках. \n Что я умею: \n 1️⃣ Переводить текст в голосовые сообщения  \n 2️⃣ Менять голос \n 3️⃣ Переводить голосовые сообщения в текст \n 4️⃣ Добавлять в чаты для автоматического перевода голосовых сообщений в текст \n 5️⃣ Повесилить вас историей дня! \n \n Надеюсь я вам помогу или доставлю удовольствие!";
-                                $send_value_keyboard = $keyboard_index;
-                                break;
+                            switch ($payload['command']) {
+                                case  "start" :
+                                    $user_bot = UserBot::firstOrCreate(
+                                        [
+                                            'vk_id' => $user_id
+                                        ]
+                                    );
+                                    $message = "Добро пожаловать $name! \n Я MultyVoiceBot, разработчик @vladislav_nep(Непомнящих Владислав), у меня есть свой сайт, его найдете в ссылках. \n Что я умею: \n 1️⃣ Переводить текст в голосовые сообщения  \n 2️⃣ Менять голос \n 3️⃣ Переводить голосовые сообщения в текст \n 4️⃣ Добавлять в чаты для автоматического перевода голосовых сообщений в текст \n \n Для синтеза  речи отправьте любой текст. \n Для распознования речи отправьте голосовое сообщение до 30 секунд. \n \n Надеюсь я вам помогу или доставлю удовольствие!";
+                                    $send_value_keyboard = $keyboard_index;
+                                    break;
 
-                            case  "speech_recognition" :
-                                $message = "Отправьте голосовое сообщение до 30 секунд! В разработке)";
-                                $send_value_keyboard = $keyboard_speech_recognition;
-                                break;
+                                case "speech_recognition_instructions":
+                                    $message = "Здесь будет инструкция, пока лень писать)";
+                                    $send_value_keyboard = "";
+                                    break;
 
-                            case "speech_recognition_instructions":
-                                $message = "Здесь будет инструкция, пока лень писать)";
-                                $send_value_keyboard = $keyboard_speech_recognition;
-                                break;
+                                case "back_index" :
+                                    $message = "Продолжим)";
+                                    $send_value_keyboard = $keyboard_index;
+                                    break;
 
-                            case "back_index" :
-                                $message = "Кликай на кнопку";
-                                $send_value_keyboard = $keyboard_index;
-                                break;
+                                case "voice" :
+                                    $message = "Выберите голос";
+                                    $send_value_keyboard = $keyboard_speech_synthesis_voice;
+                                    break;
 
-                            case  "speech_synthesis" :
-                                $message = "Синтез речи запущен, в разработке)";
-                                $send_value_keyboard = $keyboard_speech_synthesis;
-                                break;
+                                case "choice_voice":
+                                    switch ($payload['parametr_1']){
+                                        case "voice_man":
+                                            UserBot::updateOrCreate(
+                                                ['vk_id' => $user_id],
+                                                ['voice' => 'filipp']
+                                            );
+                                            $message  = "Выбран голос: Филип";
+                                            $send_value_keyboard = $keyboard_index;
+                                            break;
+                                        case "voice_woman":
+                                            UserBot::updateOrCreate(
+                                                ['vk_id' => $user_id],
+                                                ['voice' => 'alena']
+                                            );
+                                            $message  = "Выбран голос: Алена";
+                                            $send_value_keyboard = $keyboard_index;
+                                            break;
+                                        default:
+                                            $message = "Тип не распознан";
+                                            $send_value_keyboard = $keyboard_speech_synthesis_voice;
+                                            break;
+                                    }
+                                    break;
 
-                            case "back_speech_synthesis":
-                                $message = "Синтез речи запущен, в разработке";
-                                $send_value_keyboard = $keyboard_speech_synthesis;
-                                break;
-
-                            case "voice" :
-                                $message = "Выберите голос";
-                                $send_value_keyboard = $keyboard_speech_synthesis_voice;
-                                break;
-
-                            case "choice_voice":
-                                switch ($payload['parametr_1']){
-                                    case "voice_man":
-                                        $message  = "Смена голоса будет доступна в последнию очередь \n Выбран голос: Мужчина";
-                                        $send_value_keyboard = "";
+                                default:
+                                    if (isset($object['payload'])){
+                                        $message = "Команда не распознана";
+                                        $send_value_keyboard = $keyboard_index;
                                         break;
-                                    case "voice_woman":
-                                        $message  = "Смена голоса будет доступна в последнию очередь \n Выбран голос: Женщина";
-                                        $send_value_keyboard = "";
-                                        break;
-                                    default:
-                                        $message = "Тип не распознан";
-                                        $send_value_keyboard = $keyboard_speech_synthesis_voice;
-                                        break;
-                                }
-                                break;
+                                    }
+                            }
 
+                        } else {
+                            $payload  = null;
+                            $this->getlog(json_encode($vk_callback_event));
 
-                            case "history_day":
-                                $message = "В разработке";
+                            if (isset($txt)){
+                                // синтез речи
+
+                                //получаем тип голоса для данного юзера
+                                $voice = UserBot::where('vk_id', $user_id) -> voice;
+
+                                //отправляем запрос в SpeechKit
+                                $this -> SendSpeechKitSynthesis($txt, $voice);
+
+                                $message = "проверка и тест";
                                 $send_value_keyboard = "";
-                                break;
 
-                            default:
-                                $message = "Я вас не понял! Почему? \n 1) Команды осуществляются только при помощи кнопок \n 2) Слишком длинный текст для синтеза речи \n 3) Аудио длиннее 30 сек для распознования речи";
-                                $send_value_keyboard = $keyboard_index;
-                                break;
+                            } elseif (isset($vk_callback_event['object']['message']['attachments']) && $vk_callback_event['object']['message']['attachments']['type'] === "audio_message"){
+                                // распознования речи
+                                $message = "потом";
+                                $send_value_keyboard = "";
+
+                            }
 
                         }
 
@@ -276,6 +223,99 @@ class HomeController extends Controller
 
     function getlog($msg){
         file_put_contents('php://stdout', $msg. "\n");
+    }
+
+    function SendSpeechKitSynthesis($txt, $voice){
+        define('SPEECH_AUDIO_DIRECTORY', '/public/speech_audio');
+        $file_name = SPEECH_AUDIO_DIRECTORY.'/audio_'.md5($txt).'.ogg';
+        if (file_exists($file_name)) {
+            return $file_name;
+        }
+        $file_handler = fopen($file_name, 'w+');
+
+        $url = "https://tts.api.cloud.yandex.net/speech/v1/tts:synthesize";
+        $post = http_build_query(array(
+            'lang'    => 'ru-RU',
+            "voice"   => $voice,
+            'emotion' => 'neutral',
+            'text'    => $txt,
+        ));
+
+        $headers = ['Authorization: Api-Key ' . getenv('YANDEX_API_TOKEN')];
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_AUTOREFERER, TRUE);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+        curl_setopt($ch, CURLOPT_FILE, $file_handler);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        if ($post !== false) {
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+        }
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+
+        $response = curl_exec($ch);
+        if (curl_errno($ch)) {
+            print "Error: " . curl_error($ch);
+        }
+        if (curl_getinfo($ch, CURLINFO_HTTP_CODE) != 200) {
+            $decodedResponse = json_decode($response, true);
+            echo "Error code: " . $decodedResponse["error_code"] . "\r\n";
+            echo "Error message: " . $decodedResponse["error_message"] . "\r\n";
+        } else {
+            file_put_contents($file_name, $response);
+        }
+
+        //для просмотра логов
+        $this -> getlog(json_decode($response));
+        $this -> getlog(file_put_contents($file_name, $response));
+
+        curl_close($ch);
+        fclose($file_handler);
+
+        return $file_name;
+    }
+
+    function SendSpeechKitRecognition(){
+        define('YANDEX_API_ENDPOINT', "https://stt.api.cloud.yandex.net/speech/v1/stt:recognize");
+
+
+        $audioFileName = "speech.ogg";
+        $file = fopen($audioFileName, 'rb');
+
+        $query = http_build_query(array(
+            'lang'    => 'ru-RU',
+            'format'  => 'oggopus',
+        ));
+        $url = YANDEX_API_ENDPOINT.'?'.$query;
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Api-Key ' . getenv('YANDEX_API_TOKEN')));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
+
+        curl_setopt($ch, CURLOPT_INFILE, $file);
+        curl_setopt($ch, CURLOPT_INFILESIZE, filesize($audioFileName));
+        $res = curl_exec($ch);
+        curl_close($ch);
+        $decodedResponse = json_decode($res, true);
+        if (isset($decodedResponse["result"])) {
+            echo $decodedResponse["result"];
+        } else {
+            echo "Error code: " . $decodedResponse["error_code"] . "\r\n";
+            echo "Error message: " . $decodedResponse["error_message"] . "\r\n";
+        }
+
+        fclose($file);
     }
 
 
