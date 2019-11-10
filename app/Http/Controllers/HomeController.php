@@ -227,7 +227,7 @@ class HomeController extends Controller
     }
 
     function SendSpeechKitSynthesis($txt, $voice){
-        $file_name =  secure_asset('speech_audio').'/audio_'.md5($txt).'.ogg';
+        $file_name =  public_path('speech_audio').'/audio_'.md5($txt).'.ogg';
 
         $url = "https://tts.api.cloud.yandex.net/speech/v1/tts:synthesize";
         $post = http_build_query(array(
@@ -269,11 +269,8 @@ class HomeController extends Controller
 
         //для просмотра логов
         $this -> getlog(json_decode($response));
-        $this -> getlog(file_put_contents($file_name, $response));
 
         curl_close($ch);
-
-        return $file_name;
     }
 
     function SendSpeechKitRecognition(){
