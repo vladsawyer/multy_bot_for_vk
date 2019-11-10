@@ -16,7 +16,7 @@ class CreateUserBotsTable extends Migration
         Schema::create('user_bots', function (Blueprint $table) {
             $table -> bigIncrements('id');
             $table -> bigInteger('vk_id') -> unique();
-            $table -> string('voice') -> $this->default('alena');
+            $table -> string('voice') ->default('alena');
             $table -> timestamps();
         });
     }
