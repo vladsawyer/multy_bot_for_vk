@@ -12,14 +12,17 @@ class GroupRecognitionAudio implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    protected $setings;
+
     /**
      * Create a new job instance.
      *
-     * @return void
+     * @param $txt
+     * @param $voice
      */
-    public function __construct()
+    public function __construct($txt, $voice)
     {
-        //
+        $this -> setings = [$txt, $voice];
     }
 
     /**
@@ -51,8 +54,8 @@ class GroupRecognitionAudio implements ShouldQueue
             'text'    => $txt,
         ));
 
-//        $headers = ['Authorization: Api-Key ' . getenv('YANDEX_API_TOKEN')];
-        $headers = ['Authorization: Api-Key ' . "AQVN1SFv6RY9p5edudyFP2_93WhBjYQ24O5V3wx4"];
+       $headers = ['Authorization: Api-Key ' . getenv('YANDEX_API_TOKEN')];
+//        $headers = ['Authorization: Api-Key ' . "AQVN1SFv6RY9p5edudyFP2_93WhBjYQ24O5V3wx4"];
         $ch = curl_init();
 
         curl_setopt($ch, CURLOPT_AUTOREFERER, TRUE);
@@ -82,6 +85,7 @@ class GroupRecognitionAudio implements ShouldQueue
         }
 
         curl_close($ch);
+
         return $file_name;
 
     }
