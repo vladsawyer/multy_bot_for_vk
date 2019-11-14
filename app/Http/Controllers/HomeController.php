@@ -68,7 +68,17 @@ class HomeController extends Controller
                                     "color" => "positive"
                                 ],
 
-                            ]
+                            ],
+                            [
+                                [
+                                    "action" => [
+                                        "type" => "text",
+                                        "payload" => json_encode(["command" => "start"]),
+                                        "label" => "обновить"
+                                    ],
+                                    "color" => "positive"
+                                ]
+                            ],
                         ]
 
                     ];
@@ -158,18 +168,18 @@ class HomeController extends Controller
                             case "choice_voice":
                                 switch ($payload['parametr_1']) {
                                     case "voice_man":
-//                                        UserBot::updateOrCreate(
-//                                            ['vk_id' => $user_id],
-//                                            ['voice' => 'filipp']
-//                                        );
+                                        UserBot::updateOrCreate(
+                                            ['vk_id' => $user_id],
+                                            ['voice' => 'filipp']
+                                        );
                                         $message = "Выбран голос: Филип";
                                         $send_value_keyboard = $keyboard_index;
                                         break;
                                     case "voice_woman":
-//                                        UserBot::updateOrCreate(
-//                                            ['vk_id' => $user_id],
-//                                            ['voice' => 'alena']
-//                                        );
+                                        UserBot::updateOrCreate(
+                                            ['vk_id' => $user_id],
+                                            ['voice' => 'alena']
+                                        );
                                         $message = "Выбран голос: Алена";
                                         $send_value_keyboard = $keyboard_index;
                                         break;
