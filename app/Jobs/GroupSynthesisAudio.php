@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use CURLFile;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
