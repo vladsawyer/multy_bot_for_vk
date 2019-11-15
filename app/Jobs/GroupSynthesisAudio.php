@@ -132,7 +132,7 @@ class GroupSynthesisAudio implements ShouldQueue
 
         // получаю идификаторы для отправки файла
         $vk = new VKApiClient('5.103');
-        $parameter = $vk->messages()->send(getenv('VK_TOKEN'), array(
+        $parameter = $vk->docs()->save(getenv('VK_TOKEN'), array(
             'file' => $file,
         ));
 
