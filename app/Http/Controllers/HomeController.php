@@ -219,6 +219,7 @@ class HomeController extends Controller
 
                             //отправляем задачу в очередь на синтез речи
                             $this -> dispatch(new GroupSynthesisAudio($txt , $voice, $user_id));
+
                             break;
 
                         } elseif (isset($vk_callback_event['object']['message']['attachments']) && $vk_callback_event['object']['message']['attachments']['type'] === "audio_message") {

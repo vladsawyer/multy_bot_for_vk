@@ -44,6 +44,7 @@ class GroupSynthesisAudio implements ShouldQueue
         $audio_file = $this -> SendSpeechKitSynthesis($this->txt, $this->voice);
         $attachment = $this -> vkApi_upload($this->user_id, $audio_file);
         $this -> send_message($this->user_id, $attachment);
+        unlink($audio_file);
     }
 
     // отправка в yandex SpeechKit на синтез речи
@@ -137,8 +138,6 @@ class GroupSynthesisAudio implements ShouldQueue
         ));
 
         $attachment = 'audio'.$parameter['audio_message']['owner_id'].'_'. $parameter['audio_message']['id'];
-
-        unlink($audio_file);
         return $attachment;
     }
 
