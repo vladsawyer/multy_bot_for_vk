@@ -133,7 +133,6 @@ class HomeController extends Controller
 
                     if (isset($object['payload'])) {
                         $payload = json_decode($object['payload'], true);
-                        echo 'ok';
                         $this->getlog(json_encode($payload));
 
                         switch ($payload['command']) {
@@ -203,6 +202,7 @@ class HomeController extends Controller
                             'keyboard' => json_encode($send_value_keyboard),
                             'random_id' => rand(),
                         ));
+                        echo 'ok';
                         break;
 
                     } else {
@@ -217,29 +217,8 @@ class HomeController extends Controller
                             $user = UserBot::where('vk_id', $user_id)->first();
                             $voice = $user->voice;
 
-                            //отправляем запрос в SpeechKit
-                            $this -> dispatch(new GroupRecognitionAudio($txt , $voice));
-
-                            // Получает адрес сервера для загрузки документа в личное сообщение
-                            $vk = new VKApiClient('5.103');
-                            $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
-                                'peer_id' => $user_id,
-                                'type' => 'audio_message',
-                            ));
-                            $upload_url = $response['upload_url'];
-
-                            // загружаем голосовое сообщение на сервер
-                            $this -> vkApi_upload($upload_url, $file_name);
-
-                            $message = "проверка и тест";
-
-                            // отправляем сообщение
-                            $vk = new VKApiClient('5.103');
-                            $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
-                                'user_id' => $user_id,
-                                'message' => $message,
-                                'random_id' => rand(),
-                            ));
+                            //отправляем задачу в очередь на синтез речи
+                            $this -> dispatch(new GroupSynthesisAudio($txt , $voice, $user_id));
                             break;
 
                         } elseif (isset($vk_callback_event['object']['message']['attachments']) && $vk_callback_event['object']['message']['attachments']['type'] === "audio_message") {
@@ -313,29 +292,5 @@ class HomeController extends Controller
         fclose($file);
 
     }
-
-    // Функция для загрузки файла на сервер вк
-    function vkApi_upload($upload_url, $file_name) {
-        if (!file_exists($file_name)) {
-            throw new Exception('File not found: '.$file_name);
-        }
-        $curl = curl_init($upload_url);
-        curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, array('file' => new CURLfile($file_name)));
-        $json = curl_exec($curl);
-        $error = curl_error($curl);
-        if ($error) {
-            $this -> getlog($error);
-            throw new Exception("Failed {$upload_url} request");
-        }
-        curl_close($curl);
-        $response = json_decode($json, true);
-        if (!$response) {
-            throw new Exception("Invalid response for {$upload_url} request");
-        }
-        return $response;
-    }
-
 
 }

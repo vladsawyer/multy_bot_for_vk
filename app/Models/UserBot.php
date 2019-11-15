@@ -12,7 +12,7 @@ class UserBot extends Model
      * @var array
      */
     protected $attributes = [
-        'voice' => 'man',
+        'voice' => 'alena',
     ];
 
     /**
@@ -21,4 +21,6 @@ class UserBot extends Model
      * @var array
      */
     protected $fillable = ['vk_id', 'voice'];
+
+
 }
