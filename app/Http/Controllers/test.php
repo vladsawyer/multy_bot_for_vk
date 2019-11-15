@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 class test extends Controller
 {
     public function index(){
-        $response = json_encode(
+        $response_1 = json_encode(
             [
                 'response' =>
                     [
@@ -23,6 +23,10 @@ class test extends Controller
                     ],
             ]
         );
+
+        $response = json_decode($response_1);
+
+        $attachment = 'audio'.$response[0]['owner_id'].'_'. $response[0]['id'];
     }
 
 }

@@ -135,8 +135,9 @@ class GroupSynthesisAudio implements ShouldQueue
         $parameter = $vk->docs()->save(getenv('VK_TOKEN'), array(
             'file' => $file,
         ));
+        $parameter = json_decode($parameter, true);
 
-        $attachment = 'audio'.$parameter[0]['owner_id'].'_'. $parameter[0]['id'] ;
+        $attachment = 'audio'.$parameter['response'][0]['owner_id'].'_'. $parameter['response'][0]['id'];
 
         unlink($audio_file);
         return $attachment;
