@@ -12,7 +12,8 @@ class GroupRecognitionAudio implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $setings;
+    protected $txt;
+    protected $voice;
 
     /**
      * Create a new job instance.
@@ -22,7 +23,8 @@ class GroupRecognitionAudio implements ShouldQueue
      */
     public function __construct($txt, $voice)
     {
-        $this -> setings = [$txt, $voice];
+        $this -> txt = $txt;
+        $this -> voice = $voice;
     }
 
     /**
@@ -32,9 +34,9 @@ class GroupRecognitionAudio implements ShouldQueue
      * @param string $voice
      * @return void
      */
-    public function handle($txt, $voice)
+    public function handle()
     {
-       $this -> SendSpeechKitSynthesis($txt, $voice);
+       $this -> SendSpeechKitSynthesis($this->txt, $this->voice);
 
     }
 

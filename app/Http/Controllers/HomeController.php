@@ -30,14 +30,12 @@ class HomeController extends Controller
         }
 
         if ($vk_callback_event['secret'] !== getenv('VK_SECRET_TOKEN')) {
-//        if ($vk_callback_event['secret'] !== "kHLIUYshdis505") {
             return response('nioh');
         }
 
         switch ($vk_callback_event['type']) {
             case 'confirmation':
                 return response(getenv('VK_CONFIRMATION_CODE'));
-//                return response("cd67c762");
                 break;
 
             case 'message_new':
@@ -129,7 +127,6 @@ class HomeController extends Controller
                     // получаю его имя
                     $vk = new VKApiClient('5.103');
                     $response = $vk->users()->get(getenv('VK_TOKEN'), array(
-//                    $response = $vk->users()->get("1b1e3a4a5c4880f6b80d56f7014137bf61339e8c72cda87b4202a7aea79dc7563491d1ed1187ace37f722", array(
                         'user_ids' => [$user_id],
                     ));
                     $name = $response[0]['first_name'];
@@ -201,7 +198,6 @@ class HomeController extends Controller
                         // отправляем сообщение
                         $vk = new VKApiClient('5.103');
                         $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
-//                        $response = $vk->messages()->send("1b1e3a4a5c4880f6b80d56f7014137bf61339e8c72cda87b4202a7aea79dc7563491d1ed1187ace37f722", array(
                             'user_id' => $user_id,
                             'message' => $message,
                             'keyboard' => json_encode($send_value_keyboard),
@@ -218,15 +214,14 @@ class HomeController extends Controller
                             // синтез речи
 
                             //получаем тип голоса для данного юзера
-//                            $user = UserBot::where('vk_id', $user_id)->first();
-//                            $voice = $user->voice;
+                            $user = UserBot::where('vk_id', $user_id)->first();
+                            $voice = $user->voice;
 
                             //отправляем запрос в SpeechKit
-                            GroupRecognitionAudio::dispatch($txt, $voice = "alena");
+                            $this -> dispatch(new GroupRecognitionAudio($txt , $voice));
 
                             // Получает адрес сервера для загрузки документа в личное сообщение
                             $vk = new VKApiClient('5.103');
-//                            $response = $vk->docs()->getMessagesUploadServer("1b1e3a4a5c4880f6b80d56f7014137bf61339e8c72cda87b4202a7aea79dc7563491d1ed1187ace37f722", array(
                             $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
                                 'peer_id' => $user_id,
                                 'type' => 'audio_message',
@@ -240,7 +235,6 @@ class HomeController extends Controller
 
                             // отправляем сообщение
                             $vk = new VKApiClient('5.103');
-//                            $response = $vk->messages()->send("1b1e3a4a5c4880f6b80d56f7014137bf61339e8c72cda87b4202a7aea79dc7563491d1ed1187ace37f722", array(
                             $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
                                 'user_id' => $user_id,
                                 'message' => $message,
@@ -256,7 +250,6 @@ class HomeController extends Controller
                             // отправляем сообщение
                             $vk = new VKApiClient('5.103');
                             $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
-//                            $response = $vk->messages()->send("1b1e3a4a5c4880f6b80d56f7014137bf61339e8c72cda87b4202a7aea79dc7563491d1ed1187ace37f722", array(
                                 'user_id' => $user_id,
                                 'message' => $message,
                                 'random_id' => rand(),
