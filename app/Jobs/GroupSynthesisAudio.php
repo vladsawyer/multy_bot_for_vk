@@ -136,7 +136,7 @@ class GroupSynthesisAudio implements ShouldQueue
             'file' => $file,
         ));
 
-        $attachment = 'audio'.$parameter['owner_id'].'_'. $parameter['id'] ;
+        $attachment = 'audio'.$parameter[0]['owner_id'].'_'. $parameter[0]['id'] ;
 
         unlink($audio_file);
         return $attachment;
