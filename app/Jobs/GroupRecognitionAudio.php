@@ -47,6 +47,7 @@ class GroupRecognitionAudio implements ShouldQueue
         if (file_exists($file_name)) {
             return $file_name;
         }
+        $file_handler = fopen($file_name, 'w+');
 
         $url = "https://tts.api.cloud.yandex.net/speech/v1/tts:synthesize";
         $post = http_build_query(array(
@@ -64,7 +65,6 @@ class GroupRecognitionAudio implements ShouldQueue
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -83,10 +83,11 @@ class GroupRecognitionAudio implements ShouldQueue
             echo "Error code: " . $decodedResponse["error_code"] . "\r\n";
             echo "Error message: " . $decodedResponse["error_message"] . "\r\n";
         } else {
-            file_put_contents($file_name, $response);
+            fwrite($file_handler, $response);
         }
 
         curl_close($ch);
+        fclose($file_handler);
 
         return $file_name;
 
