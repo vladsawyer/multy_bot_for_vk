@@ -42,19 +42,22 @@ class GroupCallbackApiController extends Controller
                         $payload = null;
                         $this->getlog(json_encode($vk_callback_event));
 
-                        if (isset($txt)) {
+                        if ((isset($txt) || $txt != "") && (!isset($object['attachments']))) {
                             echo 'ok';
                             // синтез речи
                             // отправляем задачу в очередь
                             $this -> dispatch(new GroupSynthesisAudio($txt, $user_id));
                             break;
 
-                        } elseif (isset($object['attachments']) && ($object['attachments']['type'] == "audio_message")) {
-                            echo 'ok';
-                            // распознования речи
-                            $this -> dispatch(new GroupRecognitionAudio($txt, $user_id, $object));
-                            break;
+                        } else{
+                            if(isset($object['attachments']) && ($object['attachments']['type'] == "audio_message")) {
+                                echo 'ok';
+                                // распознования речи
+                                $this -> dispatch(new GroupRecognitionAudio($txt, $user_id, $object));
+                                break;
+                            }
                         }
+
                     }
                 } catch (\VK\Exceptions\VKApiException $e) {
                     $this->getlog($e->getMessage());
