@@ -30,7 +30,7 @@ class GroupCallbackApiController extends Controller
 
                     // проверка на тип задачи
                     if (isset($object['payload'])) {
-                        $payload = json_decode($vk_callback_event['object']['payload'], true);
+                        $payload = json_decode($object['payload'], true);
                         $this->getlog(json_encode($payload));
                         echo 'ok';
 
