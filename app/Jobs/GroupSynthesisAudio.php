@@ -43,7 +43,7 @@ class GroupSynthesisAudio implements ShouldQueue
     {
         $audio_file = $this -> SendSpeechKitSynthesis($this->txt, $this->voice);
         $attachment = $this -> vkApi_upload($this->user_id, $audio_file);
-        $this -> send_message($this->user_id, $attachment);
+        $this -> send_message($this->user_id, $attachment, $audio_file);
         unlink($audio_file);
     }
 
@@ -95,6 +95,7 @@ class GroupSynthesisAudio implements ShouldQueue
 
         curl_close($ch);
 
+        $this->getlog($audio_file);
         return $audio_file;
 
     }
@@ -109,6 +110,8 @@ class GroupSynthesisAudio implements ShouldQueue
             'type' => 'audio_message',
         ));
         $upload_url = $response['upload_url'];
+
+        $this->getlog($upload_url);
 
         if (!file_exists($audio_file)) {
             throw new \Exception('File not found: '.$audio_file);
@@ -131,6 +134,8 @@ class GroupSynthesisAudio implements ShouldQueue
         //получаем строку для сохранения файла на серваке
         $file = $upload_audio['file'];
 
+        $this->getlog($file);
+
         // получаю идификаторы для отправки файла
         $vk = new VKApiClient('5.103');
         $parameter = $vk->docs()->save(getenv('VK_TOKEN'), array(
@@ -138,17 +143,25 @@ class GroupSynthesisAudio implements ShouldQueue
         ));
 
         $attachment = 'audio'.$parameter['audio_message']['owner_id'].'_'. $parameter['audio_message']['id'];
+
+        $this->getlog($attachment);
+
         return $attachment;
     }
 
     //отправка голосового сообщения
-    function send_message($user_id, $attachment){
+    function send_message($user_id, $attachment, $audio_file){
         $vk = new VKApiClient('5.103');
         $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
             'user_id' => $user_id,
             'attachment' => $attachment,
+            'message' => "$audio_file",
             'random_id' => rand(),
         ));
+    }
+
+    function getlog($msg){
+        file_put_contents('php://stdout', $msg. "\n");
     }
 
 
