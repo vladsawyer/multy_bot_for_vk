@@ -30,7 +30,7 @@ class GroupRecognitionAudio implements ShouldQueue
     {
         $this -> txt = $txt;
         $this -> user_id = $user_id;
-        $this -> audio_file = $object['attachments']['audio_message']['link_ogg'];
+        $this -> audio_file = $object['attachments'][0]['audio_message']['link_ogg'];
     }
 
     /**
