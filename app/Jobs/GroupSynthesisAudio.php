@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\UserBot;
 use CURLFile;
 use Exception;
 use Illuminate\Bus\Queueable;
@@ -27,10 +28,9 @@ class GroupSynthesisAudio implements ShouldQueue
      * @param $voice
      * @param $user_id
      */
-    public function __construct($txt, $voice, $user_id)
+    public function __construct($txt, $user_id)
     {
         $this -> txt = $txt;
-        $this -> voice = $voice;
         $this -> user_id = $user_id;
     }
 
@@ -42,20 +42,33 @@ class GroupSynthesisAudio implements ShouldQueue
      */
     public function handle()
     {
-        $audio_file = $this -> SendSpeechKitSynthesis($this->txt, $this->voice, $this->user_id);
-        $attachment = $this -> vkApi_upload($this->user_id, $audio_file);
-        $this -> send_message($this->user_id, $attachment, $audio_file);
+        $audio_file = $this -> send_speechKit_synthesis($this -> txt, $this -> user_id);
+        $attachment = $this -> vkApi_upload($this -> user_id, $audio_file);
+        $this -> send_message($this -> user_id, $attachment);
     }
 
     // отправка в yandex SpeechKit на синтез речи
-    function SendSpeechKitSynthesis($txt, $voice, $user_id){
-
-        $audio_file =  public_path('synthesis_audio')."/audio_$user_id".'_'.random_int(1,9999).'.ogg';
+    function send_speechKit_synthesis($txt, $user_id){
+        //создаем имя и путь к этому файлу в локальном хранилище
+        $audio_file =  public_path('synthesis_audio')."/audio_$user_id".'_'.random_int(1,99999).'.ogg';
         if (file_exists($audio_file)) {
             return $audio_file;
         }
 
+        $file_handler = fopen($audio_file, 'w+');
 
+        // на случай переезда или еще каких нибудь штук
+        UserBot::firstOrCreate(
+            [
+                'vk_id' => $user_id
+            ]
+        );
+
+
+        //получаем тип голоса для данного юзера
+        $voice = UserBot::where('vk_id', $user_id) -> first() -> voice;
+
+        // отправка текста в SpeechKit
         $url = "https://tts.api.cloud.yandex.net/speech/v1/tts:synthesize";
         $post = http_build_query(array(
             'lang'    => 'ru-RU',
@@ -71,7 +84,7 @@ class GroupSynthesisAudio implements ShouldQueue
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-
+        curl_setopt($ch, CURLOPT_FILE, $file_handler);
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -89,10 +102,7 @@ class GroupSynthesisAudio implements ShouldQueue
             $decodedResponse = json_decode($response, true);
             echo "Error code: " . $decodedResponse["error_code"] . "\r\n";
             echo "Error message: " . $decodedResponse["error_message"] . "\r\n";
-        } else {
-            file_put_contents($audio_file, $response);
         }
-
         curl_close($ch);
 
         $this->getlog($audio_file);
@@ -113,6 +123,7 @@ class GroupSynthesisAudio implements ShouldQueue
 
         $this->getlog($upload_url);
 
+        //загружаем post запросом
         if (!file_exists($audio_file)) {
             throw new \Exception('File not found: '.$audio_file);
         }
@@ -136,12 +147,13 @@ class GroupSynthesisAudio implements ShouldQueue
 
         $this->getlog($file);
 
-        // получаю идификаторы для отправки файла
+        // сохраненяем файл на серваке и получаем идификаторы для отправки файла
         $vk = new VKApiClient('5.103', VKLanguage::RUSSIAN);
         $parameter = $vk->docs()->save(getenv('VK_TOKEN'), array(
             'file' => $file,
         ));
 
+        // формируем поле attachment для отправки сообщения
         $attachment = 'audio'.$parameter['audio_message']['owner_id'].'_'. $parameter['audio_message']['id'];
 
         $this->getlog($attachment);
@@ -150,13 +162,12 @@ class GroupSynthesisAudio implements ShouldQueue
     }
 
     //отправка голосового сообщения
-    function send_message($user_id, $attachment, $audio_file){
+    function send_message($user_id, $attachment){
         $vk = new VKApiClient('5.103', VKLanguage::RUSSIAN);
         $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
             'user_id' => $user_id,
             'attachment' => $attachment,
-            'message' => "$audio_file",
-            'random_id' => rand(),
+            'random_id' => random_int(1,9999999999),
         ));
     }
 

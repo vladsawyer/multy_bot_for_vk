@@ -16,5 +16,5 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::match(['get', 'post'], 'callback', 'HomeController@index') -> name('callback.verify');
+Route::match(['get', 'post'], 'callback', 'GroupCallbackApiController@index') -> name('callback.verify');
 
