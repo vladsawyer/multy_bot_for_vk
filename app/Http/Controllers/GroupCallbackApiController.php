@@ -14,12 +14,14 @@ class GroupCallbackApiController extends Controller
         $vk_callback_event = json_decode(file_get_contents("php://input"), true);
 
         if (!isset($vk_callback_event) || ($vk_callback_event['secret'] !== getenv('VK_SECRET_TOKEN'))) {
+//        if (!isset($vk_callback_event) || ($vk_callback_event['secret'] !== 'kHLIUYshdis505')) {
             return response('nioh');
         }
 
         switch ($vk_callback_event['type']) {
             case 'confirmation':
-                return response(getenv('VK_CONFIRMATION_CODE'));
+//                return response(getenv('VK_CONFIRMATION_CODE'));
+                return response('cd67c762');
                 break;
 
             case 'message_new':
@@ -42,7 +44,7 @@ class GroupCallbackApiController extends Controller
                         $payload = null;
                         $this->getlog(json_encode($vk_callback_event));
 
-                        if ((isset($txt) || $txt != "") && (!isset($object['attachments']))) {
+                        if ((isset($txt) || $txt != "") || (!isset($object['attachments']))) {
                             echo 'ok';
                             // синтез речи
                             // отправляем задачу в очередь

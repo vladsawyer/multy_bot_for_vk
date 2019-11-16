@@ -135,6 +135,7 @@ class GroupStandartAnswers implements ShouldQueue
                 // получаю его имя
                 $vk = new VKApiClient('5.103', VKLanguage::RUSSIAN);
                 $response = $vk->users()->get(getenv('VK_TOKEN'), array(
+//                $response = $vk->users()->get('1b1e3a4a5c4880f6b80d56f7014137bf61339e8c72cda87b4202a7aea79dc7563491d1ed1187ace37f722', array(
                     'user_ids' => [$user_id],
                 ));
                 $name = $response[0]['first_name'];
@@ -199,6 +200,7 @@ class GroupStandartAnswers implements ShouldQueue
         // отправляем сообщение
         $vk = new VKApiClient('5.103', VKLanguage::RUSSIAN);
         $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
+//        $response = $vk->messages()->send('1b1e3a4a5c4880f6b80d56f7014137bf61339e8c72cda87b4202a7aea79dc7563491d1ed1187ace37f722', array(
             'user_id' => $user_id,
             'message' => $message,
             'keyboard' => json_encode($send_value_keyboard),

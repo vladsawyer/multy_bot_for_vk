@@ -45,6 +45,7 @@ class GroupSynthesisAudio implements ShouldQueue
         $audio_file = $this -> send_speechKit_synthesis($this -> txt, $this -> user_id);
         $attachment = $this -> vkApi_upload($this -> user_id, $audio_file);
         $this -> send_message($this -> user_id, $attachment);
+        unlink($audio_file);
     }
 
     // отправка в yandex SpeechKit на синтез речи
@@ -55,15 +56,12 @@ class GroupSynthesisAudio implements ShouldQueue
             return $audio_file;
         }
 
-        $file_handler = fopen($audio_file, 'w+');
-
         // на случай переезда или еще каких нибудь штук
         UserBot::firstOrCreate(
             [
                 'vk_id' => $user_id
             ]
         );
-
 
         //получаем тип голоса для данного юзера
         $voice = UserBot::where('vk_id', $user_id) -> first() -> voice;
@@ -78,13 +76,14 @@ class GroupSynthesisAudio implements ShouldQueue
         ));
 
         $headers = ['Authorization: Api-Key ' . getenv('YANDEX_API_TOKEN')];
+//        $headers = ['Authorization: Api-Key ' . 'AQVN1SFv6RY9p5edudyFP2_93WhBjYQ24O5V3wx4'];
         $ch = curl_init();
 
         curl_setopt($ch, CURLOPT_AUTOREFERER, TRUE);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-        curl_setopt($ch, CURLOPT_FILE, $file_handler);
+
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -102,6 +101,8 @@ class GroupSynthesisAudio implements ShouldQueue
             $decodedResponse = json_decode($response, true);
             echo "Error code: " . $decodedResponse["error_code"] . "\r\n";
             echo "Error message: " . $decodedResponse["error_message"] . "\r\n";
+        } else {
+            file_put_contents($audio_file, $response);
         }
         curl_close($ch);
 
@@ -116,6 +117,7 @@ class GroupSynthesisAudio implements ShouldQueue
         // Получает адрес сервера для загрузки документа в личное сообщение
         $vk = new VKApiClient('5.103', VKLanguage::RUSSIAN);
         $response = $vk->docs()->getMessagesUploadServer(getenv('VK_TOKEN'), array(
+//        $response = $vk->docs()->getMessagesUploadServer('1b1e3a4a5c4880f6b80d56f7014137bf61339e8c72cda87b4202a7aea79dc7563491d1ed1187ace37f722', array(
             'peer_id' => $user_id,
             'type' => 'audio_message',
         ));
@@ -140,7 +142,6 @@ class GroupSynthesisAudio implements ShouldQueue
         $upload_audio= json_decode($json, true);
         if (!$upload_audio) {
             throw new Exception("Invalid response for {$upload_url} request");
-
         }
         //получаем строку для сохранения файла на серваке
         $file = $upload_audio['file'];
@@ -150,11 +151,12 @@ class GroupSynthesisAudio implements ShouldQueue
         // сохраненяем файл на серваке и получаем идификаторы для отправки файла
         $vk = new VKApiClient('5.103', VKLanguage::RUSSIAN);
         $parameter = $vk->docs()->save(getenv('VK_TOKEN'), array(
+//        $parameter = $vk->docs()->save('1b1e3a4a5c4880f6b80d56f7014137bf61339e8c72cda87b4202a7aea79dc7563491d1ed1187ace37f722', array(
             'file' => $file,
         ));
 
         // формируем поле attachment для отправки сообщения
-        $attachment = 'audio'.$parameter['audio_message']['owner_id'].'_'. $parameter['audio_message']['id'];
+        $attachment = 'doc'.$parameter['audio_message']['owner_id'].'_'. $parameter['audio_message']['id'].'_'.$parameter['audio_message']['access_key'] ;
 
         $this->getlog($attachment);
 
@@ -165,6 +167,7 @@ class GroupSynthesisAudio implements ShouldQueue
     function send_message($user_id, $attachment){
         $vk = new VKApiClient('5.103', VKLanguage::RUSSIAN);
         $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
+//        $response = $vk->messages()->send('1b1e3a4a5c4880f6b80d56f7014137bf61339e8c72cda87b4202a7aea79dc7563491d1ed1187ace37f722', array(
             'user_id' => $user_id,
             'attachment' => $attachment,
             'random_id' => random_int(1,9999999999),
