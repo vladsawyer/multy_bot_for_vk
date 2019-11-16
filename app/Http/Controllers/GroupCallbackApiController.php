@@ -49,7 +49,7 @@ class GroupCallbackApiController extends Controller
                             $this -> dispatch(new GroupSynthesisAudio($txt, $user_id));
                             break;
 
-                        } elseif (isset($object['message']['attachments']) && $object['message']['attachments']['type'] === "audio_message") {
+                        } elseif (isset($object['attachments']) && ($object['attachments']['type'] == "audio_message")) {
                             echo 'ok';
                             // распознования речи
                             $this -> dispatch(new GroupRecognitionAudio($txt, $user_id, $object));
