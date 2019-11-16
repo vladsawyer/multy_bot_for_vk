@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use VK\Client\Enums\VKLanguage;
 use VK\Client\VKApiClient;
 
 class GroupSynthesisAudio implements ShouldQueue
@@ -41,16 +42,16 @@ class GroupSynthesisAudio implements ShouldQueue
      */
     public function handle()
     {
-        $audio_file = $this -> SendSpeechKitSynthesis($this->txt, $this->voice);
+        $audio_file = $this -> SendSpeechKitSynthesis($this->txt, $this->voice, $this->user_id);
         $attachment = $this -> vkApi_upload($this->user_id, $audio_file);
         $this -> send_message($this->user_id, $attachment, $audio_file);
         unlink($audio_file);
     }
 
     // отправка в yandex SpeechKit на синтез речи
-    function SendSpeechKitSynthesis($txt, $voice){
+    function SendSpeechKitSynthesis($txt, $voice, $user_id){
 
-        $audio_file =  public_path('synthesis_audio').'/audio_'.md5($txt).'.ogg';
+        $audio_file =  public_path('synthesis_audio')."/audio_$user_id".'_'.random_int(1,9999).'.ogg';
         if (file_exists($audio_file)) {
             return $audio_file;
         }
@@ -104,7 +105,7 @@ class GroupSynthesisAudio implements ShouldQueue
     function vkApi_upload($user_id, $audio_file) {
 
         // Получает адрес сервера для загрузки документа в личное сообщение
-        $vk = new VKApiClient('5.103');
+        $vk = new VKApiClient('5.103', VKLanguage::RUSSIAN);
         $response = $vk->docs()->getMessagesUploadServer(getenv('VK_TOKEN'), array(
             'peer_id' => $user_id,
             'type' => 'audio_message',
@@ -137,7 +138,7 @@ class GroupSynthesisAudio implements ShouldQueue
         $this->getlog($file);
 
         // получаю идификаторы для отправки файла
-        $vk = new VKApiClient('5.103');
+        $vk = new VKApiClient('5.103', VKLanguage::RUSSIAN);
         $parameter = $vk->docs()->save(getenv('VK_TOKEN'), array(
             'file' => $file,
         ));
@@ -151,7 +152,7 @@ class GroupSynthesisAudio implements ShouldQueue
 
     //отправка голосового сообщения
     function send_message($user_id, $attachment, $audio_file){
-        $vk = new VKApiClient('5.103');
+        $vk = new VKApiClient('5.103', VKLanguage::RUSSIAN);
         $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
             'user_id' => $user_id,
             'attachment' => $attachment,

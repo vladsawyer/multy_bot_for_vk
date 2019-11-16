@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\UserBot;
 use CURLFile;
+use VK\Client\Enums\VKLanguage;
 use VK\Client\VKApiClient;
 use App\Jobs\GroupRecognitionAudio;
 use App\Jobs\GroupSynthesisAudio;
@@ -25,11 +26,8 @@ class HomeController extends Controller
         header("HTTP/1.1 200 OK");
         $vk_callback_event = json_decode(file_get_contents("php://input"), true);
 
-        if (!isset($vk_callback_event)){
-            echo 'nioh';
-        }
 
-        if ($vk_callback_event['secret'] !== getenv('VK_SECRET_TOKEN')) {
+        if (!isset($vk_callback_event) || ($vk_callback_event['secret'] !== getenv('VK_SECRET_TOKEN'))) {
             return response('nioh');
         }
 
@@ -125,7 +123,7 @@ class HomeController extends Controller
                     $txt = $object['text'] ?? "";
 
                     // получаю его имя
-                    $vk = new VKApiClient('5.103');
+                    $vk = new VKApiClient('5.103', VKLanguage::RUSSIAN);
                     $response = $vk->users()->get(getenv('VK_TOKEN'), array(
                         'user_ids' => [$user_id],
                     ));
@@ -195,7 +193,7 @@ class HomeController extends Controller
                         }
 
                         // отправляем сообщение
-                        $vk = new VKApiClient('5.103');
+                        $vk = new VKApiClient('5.103', VKLanguage::RUSSIAN);
                         $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
                             'user_id' => $user_id,
                             'message' => $message,
@@ -228,7 +226,7 @@ class HomeController extends Controller
                             $message = "потом";
 
                             // отправляем сообщение
-                            $vk = new VKApiClient('5.103');
+                            $vk = new VKApiClient('5.103', VKLanguage::RUSSIAN);
                             $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
                                 'user_id' => $user_id,
                                 'message' => $message,
