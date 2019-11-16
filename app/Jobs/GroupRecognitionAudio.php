@@ -17,21 +17,20 @@ class GroupRecognitionAudio implements ShouldQueue
 
     protected $txt;
     protected $user_id;
-    protected $vk_callback_event;
+    protected $object;
     protected $audio_file;
 
     /**
      * Create a new job instance.
      * @param $txt
      * @param $user_id
-     * @param $vk_callback_event
+     * @param $object
      */
-    public function __construct($txt, $user_id, $vk_callback_event)
+    public function __construct($txt, $user_id, $object)
     {
         $this -> txt = $txt;
         $this -> user_id = $user_id;
-        $this -> vk_callback_event = $vk_callback_event;
-        $this -> audio_file = $vk_callback_event['object']['message']['attachments']['link_ogg'];
+        $this -> audio_file = $object['message']['attachments']['link_ogg'];
     }
 
     /**

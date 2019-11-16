@@ -18,7 +18,7 @@ class GroupStandartAnswers implements ShouldQueue
     protected $user_id;
     protected $name;
     protected $payload;
-    protected $vk_callback_event;
+    protected $object;
     protected $keyboard;
 
 
@@ -30,11 +30,11 @@ class GroupStandartAnswers implements ShouldQueue
      * @param $payload
      * @param $object
      */
-    public function __construct($user_id, $payload, $vk_callback_event)
+    public function __construct($user_id, $payload, $object)
     {
         $this -> user_id = $user_id;
         $this -> payload = $payload;
-        $this -> vk_callback_event = $vk_callback_event;
+        $this -> object = $object;
         $this -> keyboard = $keyboard = [
             'keyboard_index' =>
                 [
@@ -126,10 +126,10 @@ class GroupStandartAnswers implements ShouldQueue
      */
     public function handle()
     {
-        $this -> Command_Keyboard($this -> user_id, $this -> payload, $this -> vk_callback_event, $this -> keyboard);
+        $this -> Command_Keyboard($this -> user_id, $this -> payload, $this -> object, $this -> keyboard);
     }
 
-    function Command_Keyboard( $user_id, $payload, $vk_callback_event, $keyboard){
+    function Command_Keyboard( $user_id, $payload, $object, $keyboard){
         switch ($payload['command']) {
             case  "start" :
                 // получаю его имя
@@ -189,7 +189,7 @@ class GroupStandartAnswers implements ShouldQueue
                 break;
 
             default:
-                if (isset($vk_callback_event['object']['payload'])) {
+                if (isset($object['payload'])) {
                     $message = "Команда не распознана";
                     $send_value_keyboard = $keyboard['start'];
                     break;

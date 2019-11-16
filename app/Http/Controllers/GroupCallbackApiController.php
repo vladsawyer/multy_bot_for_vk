@@ -24,17 +24,18 @@ class GroupCallbackApiController extends Controller
 
             case 'message_new':
                 try {
-                    $user_id = $vk_callback_event['object']['from_id'];
-                    $txt = $vk_callback_event['object']['text'] ?? "";
+                    $object = $vk_callback_event['object'];
+                    $user_id = $object['from_id'];
+                    $txt = $object['text'] ?? "";
 
                     // проверка на тип задачи
-                    if (isset($vk_callback_event['object']['payload'])) {
+                    if (isset($object['payload'])) {
                         $payload = json_decode($vk_callback_event['object']['payload'], true);
                         $this->getlog(json_encode($payload));
                         echo 'ok';
 
                         //отправляем задачу в очередь, ответы на стандартные дейтвия по кнопкам
-                        $this -> dispatch(new GroupStandartAnswers($user_id, $payload, $vk_callback_event));
+                        $this -> dispatch(new GroupStandartAnswers($user_id, $payload, $object));
                         break;
 
                     } else {
@@ -48,10 +49,10 @@ class GroupCallbackApiController extends Controller
                             $this -> dispatch(new GroupSynthesisAudio($txt, $user_id));
                             break;
 
-                        } elseif (isset($vk_callback_event['object']['message']['attachments']) && $vk_callback_event['object']['message']['attachments']['type'] === "audio_message") {
+                        } elseif (isset($object['message']['attachments']) && $object['message']['attachments']['type'] === "audio_message") {
                             echo 'ok';
                             // распознования речи
-                            $this -> dispatch(new GroupRecognitionAudio($txt, $user_id, $vk_callback_event));
+                            $this -> dispatch(new GroupRecognitionAudio($txt, $user_id, $object));
                             break;
                         }
                     }
