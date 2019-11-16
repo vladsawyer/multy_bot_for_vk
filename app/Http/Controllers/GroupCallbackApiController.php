@@ -24,7 +24,7 @@ class GroupCallbackApiController extends Controller
 
             case 'message_new':
                 try {
-                    $object = $vk_callback_event['object'];
+                    $object = $vk_callback_event['object']['message'];
                     $user_id = $object['from_id'];
                     $txt = $object['text'] ?? "";
 
