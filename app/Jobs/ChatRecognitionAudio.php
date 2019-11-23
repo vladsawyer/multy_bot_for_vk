@@ -41,7 +41,7 @@ class ChatRecognitionAudio implements ShouldQueue
      */
     public function handle()
     {
-        $file_path = public_path('recognition_audio')."/audio_". $this -> peer_id. '_' .random_int(1,99999).'.ogg';
+        $file_path = storage_path('recognition_audio')."/audio_". $this -> peer_id. '_' .random_int(1,99999).'.ogg';
         $audio_file_path = $this -> download_audio_message($this -> audio_file, $file_path);
         $message = $this -> send_speechKit_recognition($audio_file_path);
         $name = $this -> get_name($this -> user_id);
