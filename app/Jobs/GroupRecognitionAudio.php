@@ -41,6 +41,7 @@ class GroupRecognitionAudio implements ShouldQueue
         $file_path = storage_path('recognition_audio')."/audio_". $this -> user_id. '_' .random_int(1,99999).'.ogg';
         $audio_file_path = $this -> download_audio_message($this -> audio_file, $file_path);
         $message = $this -> send_speechKit_recognition($audio_file_path);
+        $this -> getlog($message);
         $this -> send_message($this -> user_id, $message);
         unlink($file_path);
     }
@@ -53,6 +54,7 @@ class GroupRecognitionAudio implements ShouldQueue
         curl_exec($ch);
         curl_close($ch);
         fclose($audio_file_path);
+        $this -> getlog($audio_file_path);
         return $audio_file_path;
     }
 
@@ -85,6 +87,9 @@ class GroupRecognitionAudio implements ShouldQueue
             'message' => $message,
             'random_id' => random_int(1,9999999999),
         ));
+    }
 
+    function getlog($msg){
+        file_put_contents('php://stdout', $msg. "\n");
     }
 }
