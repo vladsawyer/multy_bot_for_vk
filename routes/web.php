@@ -18,3 +18,4 @@ Route::get('/', function () {
 
 Route::match(['get', 'post'], 'callback', 'GroupCallbackApiController@index') -> name('callback.verify');
 
+

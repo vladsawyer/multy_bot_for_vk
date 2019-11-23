@@ -26,7 +26,6 @@ class GroupStandartAnswers implements ShouldQueue
      * Create a new job instance.
      *
      * @param $user_id
-     * @param $name
      * @param $payload
      * @param $object
      */
@@ -130,27 +129,27 @@ class GroupStandartAnswers implements ShouldQueue
     }
 
     function Command_Keyboard( $user_id, $payload, $object, $keyboard){
+        $attachment = "";
         switch ($payload['command']) {
             case  "start" :
                 // получаю его имя
                 $vk = new VKApiClient('5.103', VKLanguage::RUSSIAN);
                 $response = $vk->users()->get(getenv('VK_TOKEN'), array(
-//                $response = $vk->users()->get('1b1e3a4a5c4880f6b80d56f7014137bf61339e8c72cda87b4202a7aea79dc7563491d1ed1187ace37f722', array(
                     'user_ids' => [$user_id],
                 ));
-                $name = $response[0]['first_name'];
+                $name = $response[0]['first_name']. " " .$response[0]['last_name'];
 
                 UserBot::firstOrCreate(
                     [
                         'vk_id' => $user_id
                     ]
                 );
-                $message = "Добро пожаловать $name! \n Я MultyVoiceBot, разработчик @vladislav_nep(Непомнящих Владислав), у меня есть свой сайт, его найдете в ссылках. \n Что я умею: \n 1️⃣ Переводить текст в голосовые сообщения  \n 2️⃣ Менять голос \n 3️⃣ Переводить голосовые сообщения в текст \n 4️⃣ Добавлять в чаты для автоматического перевода голосовых сообщений в текст \n \n Для синтеза  речи отправьте любой текст. \n Для распознования речи отправьте голосовое сообщение до 30 секунд. \n \n Надеюсь я вам помогу или доставлю удовольствие!";
+                $message = "Добро пожаловать $name! \n Я MultyVoiceBot, разработчик @vladislav_nep(Непомнящих Владислав). \n Что я умею: \n 1️⃣ Переводить текст в голосовые сообщения  \n 2️⃣ Менять голос \n 3️⃣ Переводить голосовые сообщения в текст \n 4️⃣ Добавлять в чаты для автоматического перевода голосовых сообщений в текст \n \n Для синтеза  речи отправьте любой текст. \n Для распознавания речи отправьте голосовое сообщение до 30 секунд. \n \n Надеюсь я вам помогу или доставлю удовольствие!";
                 $send_value_keyboard = $keyboard['keyboard_index'];
                 break;
 
             case "speech_recognition_instructions":
-                $message = "Здесь будет инструкция, пока лень писать)";
+                $attachment = "photo298714984_457250212,photo298714984_457250213";
                 $send_value_keyboard = "";
                 break;
 
@@ -190,7 +189,7 @@ class GroupStandartAnswers implements ShouldQueue
                 break;
 
             default:
-                if (isset($object['payload'])) {
+                if (!empty($object['payload'])) {
                     $message = "Команда не распознана";
                     $send_value_keyboard = $keyboard['start'];
                     break;
@@ -200,9 +199,9 @@ class GroupStandartAnswers implements ShouldQueue
         // отправляем сообщение
         $vk = new VKApiClient('5.103', VKLanguage::RUSSIAN);
         $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
-//        $response = $vk->messages()->send('1b1e3a4a5c4880f6b80d56f7014137bf61339e8c72cda87b4202a7aea79dc7563491d1ed1187ace37f722', array(
             'user_id' => $user_id,
             'message' => $message,
+            'attachment' => $attachment,
             'keyboard' => json_encode($send_value_keyboard),
             'random_id' => random_int(1,9999999999),
         ));

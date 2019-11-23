@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -10,24 +9,28 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use VK\Client\Enums\VKLanguage;
 use VK\Client\VKApiClient;
+use Exception;
 
-class GroupRecognitionAudio implements ShouldQueue
+class ChatRecognitionAudio implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $user_id;
+    protected $peer_id;
     protected $object;
     protected $audio_file;
+    protected $user_id;
 
     /**
      * Create a new job instance.
-     * @param $user_id
+     * @param $peer_id
      * @param $audio_file
+     * @param $user_id
      */
-    public function __construct($user_id, $audio_file)
+    public function __construct($peer_id, $audio_file, $user_id)
     {
-        $this -> user_id = $user_id;
+        $this -> peer_id = $peer_id;
         $this -> audio_file = $audio_file;
+        $this -> user_id = $user_id;
     }
 
     /**
@@ -38,14 +41,15 @@ class GroupRecognitionAudio implements ShouldQueue
      */
     public function handle()
     {
-        $file_path = public_path('recognition_audio')."/audio_". $this -> user_id. '_' .random_int(1,99999).'.ogg';
+        $file_path = public_path('recognition_audio')."/audio_". $this -> peer_id. '_' .random_int(1,99999).'.ogg';
         $audio_file_path = $this -> download_audio_message($this -> audio_file, $file_path);
         $message = $this -> send_speechKit_recognition($audio_file_path);
-        $this -> send_message($this -> user_id, $message);
-        unlink($file_path);
+        $name = $this -> get_name($this -> user_id);
+        $this -> send_message($this -> peer_id, $message, $name);
+       unlink($file_path);
     }
 
-    function download_audio_message($audio_file, $file_path ){
+    function download_audio_message($audio_file, $file_path){
         $audio_file_path = fopen( $file_path, 'w+b');
         $ch = curl_init($audio_file);
         curl_setopt($ch, CURLOPT_FILE, $audio_file_path);
@@ -76,13 +80,22 @@ class GroupRecognitionAudio implements ShouldQueue
         return $decodedResponse["result"];
     }
 
+    // получаeм его имя
+    function get_name($user_id){
+        $vk = new VKApiClient('5.103', VKLanguage::RUSSIAN);
+                $response = $vk->users()->get(getenv('VK_TOKEN'), array(
+            'user_ids' => [$user_id],
+        ));
+       return $name = $response[0]['first_name']. " " .$response[0]['last_name'];
+    }
+
     //отправка переведенного сообщения
-    function send_message($user_id, $message){
+    function send_message($peer_id, $message, $name){
         $vk = new VKApiClient('5.103', VKLanguage::RUSSIAN);
         $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
-            'user_id' => $user_id,
-            'message' => $message,
-            'random_id' => random_int(1,9999999999),
+            'peer_id' => $peer_id,
+            'message' => "[$name]\n". $message,
+            'random_id' => random_int(1,999999),
         ));
 
     }

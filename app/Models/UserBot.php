@@ -22,5 +22,4 @@ class UserBot extends Model
      */
     protected $fillable = ['vk_id', 'voice'];
 
-
 }

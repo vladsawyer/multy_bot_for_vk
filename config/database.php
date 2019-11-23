@@ -1,9 +1,5 @@
 <?php
 
-use Illuminate\Support\Str;
-
-$DATABASE_URL = parse_url(getenv("DATABASE_URL"));
-
 return [
 
     /*
@@ -36,22 +32,22 @@ return [
 
     'connections' => [
 
-//        'sqlite' => [
-//            'driver' => 'sqlite',
-//            'url' => env('DATABASE_URL'),
-//            'database' => env('DB_DATABASE', database_path('database.sqlite')),
-//            'prefix' => '',
-//            'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
-//        ],
+        'sqlite' => [
+            'driver' => 'sqlite',
+            'url' => env('DATABASE_URL'),
+            'database' => env('DB_DATABASE', database_path('database.sqlite')),
+            'prefix' => '',
+            'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
+        ],
 
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
             'host' => env('DB_HOST', 'db4free.net'),
             'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_DATABASE', 'voicevkbot'),
-            'username' => env('DB_USERNAME', 'vnvkbot'),
-            'password' => env('DB_PASSWORD', '96b5bc5f9759b62de01fd76e6'),
+            'database' => env('DB_DATABASE'),
+            'username' => env('DB_USERNAME'),
+            'password' => env('DB_PASSWORD'),
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
@@ -66,11 +62,11 @@ return [
 
         'pgsql' => [
             'driver' => 'pgsql',
-            'host' =>  $DATABASE_URL["host"],
-            'port' =>  $DATABASE_URL["port"],
-            'database' =>  ltrim($DATABASE_URL["path"], "/"),
-            'username' =>  $DATABASE_URL["user"],
-            'password' =>  $DATABASE_URL["pass"],
+            'host' => env('DB_HOST'),
+            'port' => env('DB_PORT'),
+            'database' => env('DB_DATABASE'),
+            'username' => env('DB_USERNAME'),
+            'password' => env('DB_PASSWORD'),
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
@@ -78,18 +74,18 @@ return [
             'sslmode' => 'require',
         ],
 
-//        'sqlsrv' => [
-//            'driver' => 'sqlsrv',
-//            'url' => env('DATABASE_URL'),
-//            'host' => env('DB_HOST', 'localhost'),
-//            'port' => env('DB_PORT', '1433'),
-//            'database' => env('DB_DATABASE', 'forge'),
-//            'username' => env('DB_USERNAME', 'forge'),
-//            'password' => env('DB_PASSWORD', ''),
-//            'charset' => 'utf8',
-//            'prefix' => '',
-//            'prefix_indexes' => true,
-//        ],
+        'sqlsrv' => [
+            'driver' => 'sqlsrv',
+            'url' => env('DATABASE_URL'),
+            'host' => env('DB_HOST', 'localhost'),
+            'port' => env('DB_PORT', '1433'),
+            'database' => env('DB_DATABASE', 'forge'),
+            'username' => env('DB_USERNAME', 'forge'),
+            'password' => env('DB_PASSWORD', ''),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+        ],
 
     ],
 

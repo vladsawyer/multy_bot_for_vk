@@ -25,7 +25,6 @@ class GroupSynthesisAudio implements ShouldQueue
      * Create a new job instance.
      *
      * @param $txt
-     * @param $voice
      * @param $user_id
      */
     public function __construct($txt, $user_id)
@@ -63,6 +62,7 @@ class GroupSynthesisAudio implements ShouldQueue
             ]
         );
 
+
         //получаем тип голоса для данного юзера
         $voice = UserBot::where('vk_id', $user_id) -> first() -> voice;
 
@@ -76,7 +76,6 @@ class GroupSynthesisAudio implements ShouldQueue
         ));
 
         $headers = ['Authorization: Api-Key ' . getenv('YANDEX_API_TOKEN')];
-//        $headers = ['Authorization: Api-Key ' . 'AQVN1SFv6RY9p5edudyFP2_93WhBjYQ24O5V3wx4'];
         $ch = curl_init();
 
         curl_setopt($ch, CURLOPT_AUTOREFERER, TRUE);
@@ -105,10 +104,7 @@ class GroupSynthesisAudio implements ShouldQueue
             file_put_contents($audio_file, $response);
         }
         curl_close($ch);
-
-        $this->getlog($audio_file);
         return $audio_file;
-
     }
 
     // Функция для загрузки файла на сервер вк
@@ -117,13 +113,10 @@ class GroupSynthesisAudio implements ShouldQueue
         // Получает адрес сервера для загрузки документа в личное сообщение
         $vk = new VKApiClient('5.103', VKLanguage::RUSSIAN);
         $response = $vk->docs()->getMessagesUploadServer(getenv('VK_TOKEN'), array(
-//        $response = $vk->docs()->getMessagesUploadServer('1b1e3a4a5c4880f6b80d56f7014137bf61339e8c72cda87b4202a7aea79dc7563491d1ed1187ace37f722', array(
             'peer_id' => $user_id,
             'type' => 'audio_message',
         ));
         $upload_url = $response['upload_url'];
-
-        $this->getlog($upload_url);
 
         //загружаем post запросом
         if (!file_exists($audio_file)) {
@@ -146,20 +139,14 @@ class GroupSynthesisAudio implements ShouldQueue
         //получаем строку для сохранения файла на серваке
         $file = $upload_audio['file'];
 
-        $this->getlog($file);
-
         // сохраненяем файл на серваке и получаем идификаторы для отправки файла
         $vk = new VKApiClient('5.103', VKLanguage::RUSSIAN);
         $parameter = $vk->docs()->save(getenv('VK_TOKEN'), array(
-//        $parameter = $vk->docs()->save('1b1e3a4a5c4880f6b80d56f7014137bf61339e8c72cda87b4202a7aea79dc7563491d1ed1187ace37f722', array(
             'file' => $file,
         ));
 
         // формируем поле attachment для отправки сообщения
         $attachment = 'doc'.$parameter['audio_message']['owner_id'].'_'. $parameter['audio_message']['id'].'_'.$parameter['audio_message']['access_key'] ;
-
-        $this->getlog($attachment);
-
         return $attachment;
     }
 
@@ -167,16 +154,10 @@ class GroupSynthesisAudio implements ShouldQueue
     function send_message($user_id, $attachment){
         $vk = new VKApiClient('5.103', VKLanguage::RUSSIAN);
         $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
-//        $response = $vk->messages()->send('1b1e3a4a5c4880f6b80d56f7014137bf61339e8c72cda87b4202a7aea79dc7563491d1ed1187ace37f722', array(
             'user_id' => $user_id,
             'attachment' => $attachment,
             'random_id' => random_int(1,9999999999),
         ));
     }
-
-    function getlog($msg){
-        file_put_contents('php://stdout', $msg. "\n");
-    }
-
 
 }
