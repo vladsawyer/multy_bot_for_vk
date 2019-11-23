@@ -50,7 +50,7 @@ class GroupSynthesisAudio implements ShouldQueue
     // отправка в yandex SpeechKit на синтез речи
     function send_speechKit_synthesis($txt, $user_id){
         //создаем имя и путь к этому файлу в локальном хранилище
-        $audio_file =  storage_path('app/synthesis_audio')."/audio_$user_id".'_'.random_int(1,99999).'.ogg';
+        $audio_file =  storage_path('synthesis_audio')."/audio_$user_id".'_'.random_int(1,99999).'.ogg';
         if (file_exists($audio_file)) {
             return $audio_file;
         }
