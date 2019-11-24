@@ -50,6 +50,8 @@ class GroupRecognitionAudio implements ShouldQueue
         $audio_file_path = fopen( $file_path, 'w+b');
         $ch = curl_init($audio_file);
         curl_setopt($ch, CURLOPT_FILE, $audio_file_path);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_exec($ch);
         curl_close($ch);
@@ -65,6 +67,7 @@ class GroupRecognitionAudio implements ShouldQueue
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Api-Key ' . getenv('YANDEX_API_TOKEN')));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
