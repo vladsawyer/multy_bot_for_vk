@@ -62,7 +62,7 @@ class GroupRecognitionAudio implements ShouldQueue
         $data = curl_exec($ch);
         curl_close($ch);
         $audio_file_path = file_put_contents($file_path, $data);
-        $this -> getlog(file_get_contents($audio_file_path));
+        $this -> getlog(file_get_contents($file_path));
         return $audio_file_path;
     }
 
