@@ -38,6 +38,7 @@ class GroupRecognitionAudio implements ShouldQueue
      */
     public function handle()
     {
+        $this -> getlog($this -> audio_file);
         $file_path = storage_path('recognition_audio')."/audio_". $this -> user_id. '_' .random_int(1,99999).'.ogg';
         $audio_file_path = $this -> download_audio_message($this -> audio_file, $file_path);
         $message = $this -> send_speechKit_recognition($file_path);
