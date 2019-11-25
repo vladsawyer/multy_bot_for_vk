@@ -57,8 +57,12 @@ class GroupRecognitionAudio implements ShouldQueue
 //        $this -> getlog(stream_get_contents($audio_file_path));
 //        $this -> getlog($audio_file_path);
 
-        $ch = curl_init($audio_file);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $audio_file);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
         $data = curl_exec($ch);
         curl_close($ch);
         $audio_file_path = file_put_contents($file_path, $data);
@@ -67,9 +71,7 @@ class GroupRecognitionAudio implements ShouldQueue
 
     // отправка в yandex SpeechKit на распознование речи
     function send_speechKit_recognition($file_path){
-        $audio_file_path = fopen( $file_path, 'r+b');
-        $this -> getlog($audio_file_path);
-        $this -> getlog(stream_get_contents($audio_file_path));
+        $audio_file_path = file_get_contents($file_path);
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, "https://stt.api.cloud.yandex.net/speech/v1/stt:recognize?lang=ru-RU&format=oggopus");
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Api-Key ' . getenv('YANDEX_API_TOKEN')));
