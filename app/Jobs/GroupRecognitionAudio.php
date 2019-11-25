@@ -49,14 +49,13 @@ class GroupRecognitionAudio implements ShouldQueue
         $audio_file_path = fopen( $file_path, 'cb');
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $audio_file);
-        curl_setopt($ch, CURLOPT_FILE, $audio_file_path);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
         curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
         $data = curl_exec($ch);
         fwrite($audio_file_path, $data);
-        fclose($audio_file_path);
+//        fclose($audio_file_path);
         curl_close($ch);
 
     }
@@ -81,7 +80,7 @@ class GroupRecognitionAudio implements ShouldQueue
             echo "Error code: " . $decodedResponse["error_code"] . "\n";
             echo "Error message: " . $decodedResponse["error_message"] . "\n";
         }
-        fclose($audio_file_path);
+//        fclose($audio_file_path);
         return $decodedResponse["result"];
     }
 
