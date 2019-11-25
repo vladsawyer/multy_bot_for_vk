@@ -50,7 +50,7 @@ class ChatRecognitionAudio implements ShouldQueue
     }
 
     function download_audio_message($audio_file, $file_path){
-        $audio_file_path = fopen( $file_path, 'w+b');
+        $audio_file_path = fopen( $file_path, 'cb');
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $audio_file);
         curl_setopt($ch, CURLOPT_FILE, $audio_file_path);
