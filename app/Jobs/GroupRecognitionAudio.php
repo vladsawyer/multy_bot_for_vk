@@ -54,8 +54,8 @@ class GroupRecognitionAudio implements ShouldQueue
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
         curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
         $data = curl_exec($ch);
-        curl_close($ch);
         file_put_contents($file_path, $data);
+        curl_close($ch);
     }
 
     // отправка в yandex SpeechKit на распознование речи
