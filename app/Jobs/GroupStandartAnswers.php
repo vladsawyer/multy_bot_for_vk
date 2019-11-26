@@ -49,17 +49,6 @@ class GroupStandartAnswers implements ShouldQueue
                                 "color" => "primary"
                             ]
                         ],
-                        [
-                            [
-                                "action" => [
-                                    "type" => "text",
-                                    "payload" => "{\"command\": \"speech_recognition_instructions\"}",
-                                    "label" => "Как добавить бота в беседу"
-                                ],
-                                "color" => "primary"
-                            ],
-
-                        ],
                     ]
                 ],
 
@@ -148,11 +137,6 @@ class GroupStandartAnswers implements ShouldQueue
                 $send_value_keyboard = $keyboard['keyboard_index'];
                 break;
 
-            case "speech_recognition_instructions":
-                $attachment = "photo298714984_457250212,photo298714984_457250213";
-                $send_value_keyboard = "";
-                break;
-
             case "back_index" :
                 $message = "Продолжим)";
                 $send_value_keyboard = $keyboard['keyboard_index'];
@@ -201,7 +185,6 @@ class GroupStandartAnswers implements ShouldQueue
         $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
             'user_id' => $user_id,
             'message' => $message,
-            'attachment' => $attachment,
             'keyboard' => json_encode($send_value_keyboard),
             'random_id' => random_int(1,9999999999),
         ));
