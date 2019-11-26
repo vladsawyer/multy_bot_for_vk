@@ -45,19 +45,20 @@ class GroupRecognitionAudio implements ShouldQueue
         unlink($file_path);
     }
 
-    function download_audio_message($audio_file, $file_path ){
-        $audio_file_path = fopen( $file_path, 'cb');
+    function download_audio_message($audio_file, $file_path){
+        $audio_file_path = fopen( $file_path, 'ab');
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $audio_file);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
         curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
         $data = curl_exec($ch);
         fwrite($audio_file_path, $data);
-//        fclose($audio_file_path);
         curl_close($ch);
-
+        fclose($audio_file_path);
+        //file_put_contents($file_path, $data);
     }
 
     // отправка в yandex SpeechKit на распознование речи
@@ -68,6 +69,7 @@ class GroupRecognitionAudio implements ShouldQueue
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Api-Key ' .getenv('YANDEX_API_TOKEN')));
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);

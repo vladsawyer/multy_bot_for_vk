@@ -50,17 +50,15 @@ class ChatRecognitionAudio implements ShouldQueue
     }
 
     function download_audio_message($audio_file, $file_path){
-        $audio_file_path = fopen( $file_path, 'cb');
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $audio_file);
-        curl_setopt($ch, CURLOPT_FILE, $audio_file_path);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
         curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
         $data = curl_exec($ch);
-        fwrite($audio_file_path, $data);
-        fclose($audio_file_path);
+        file_put_contents($file_path, $data);
         curl_close($ch);
     }
 
@@ -69,9 +67,10 @@ class ChatRecognitionAudio implements ShouldQueue
         $audio_file_path = fopen( $file_path, 'rb');
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, "https://stt.api.cloud.yandex.net/speech/v1/stt:recognize?lang=ru-RU&format=oggopus");
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Api-Key ' . getenv('YANDEX_API_TOKEN')));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Api-Key ' .getenv('YANDEX_API_TOKEN')));
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
