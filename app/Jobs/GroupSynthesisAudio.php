@@ -18,7 +18,6 @@ class GroupSynthesisAudio implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $txt;
-    protected $voice;
     protected $user_id;
 
     /**
@@ -55,7 +54,7 @@ class GroupSynthesisAudio implements ShouldQueue
             return $audio_file;
         }
 
-        // на случай переезда или еще каких нибудь штук
+        // на случай переезда или еще каких-нибудь штук
         UserBot::firstOrCreate(
             [
                 'vk_id' => $user_id

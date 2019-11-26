@@ -92,8 +92,4 @@ class GroupRecognitionAudio implements ShouldQueue
             'random_id' => random_int(1,9999999999),
         ));
     }
-
-    function getlog($msg){
-        file_put_contents('php://stdout', $msg. "\n");
-    }
 }
