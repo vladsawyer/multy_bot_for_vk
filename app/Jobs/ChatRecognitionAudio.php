@@ -67,7 +67,7 @@ class ChatRecognitionAudio implements ShouldQueue
         $audio_file_path = fopen( $file_path, 'rb');
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, "https://stt.api.cloud.yandex.net/speech/v1/stt:recognize?lang=ru-RU&format=oggopus");
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Api-Key ' .getenv('YANDEX_API_TOKEN')));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Api-Key ' .env('YANDEX_API_TOKEN')));
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HEADER, false);
@@ -90,7 +90,7 @@ class ChatRecognitionAudio implements ShouldQueue
     // получаeм его имя
     function get_name($user_id){
         $vk = new VKApiClient('5.103', VKLanguage::RUSSIAN);
-                $response = $vk->users()->get(getenv('VK_TOKEN'), array(
+                $response = $vk->users()->get(env('VK_TOKEN'), array(
             'user_ids' => [$user_id],
         ));
        return $name = $response[0]['first_name']. " " .$response[0]['last_name'];
@@ -99,7 +99,7 @@ class ChatRecognitionAudio implements ShouldQueue
     //отправка переведенного сообщения
     function send_message($peer_id, $message, $name){
         $vk = new VKApiClient('5.103', VKLanguage::RUSSIAN);
-        $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
+        $response = $vk->messages()->send(env('VK_TOKEN'), array(
             'peer_id' => $peer_id,
             'message' => "[$name]\n". $message,
             'random_id' => random_int(1,999999),

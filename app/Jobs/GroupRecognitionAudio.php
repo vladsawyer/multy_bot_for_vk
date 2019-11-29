@@ -63,7 +63,7 @@ class GroupRecognitionAudio implements ShouldQueue
         $audio_file_path = fopen( $file_path, 'rb');
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, "https://stt.api.cloud.yandex.net/speech/v1/stt:recognize?lang=ru-RU&format=oggopus");
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Api-Key ' .getenv('YANDEX_API_TOKEN')));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Api-Key ' .env('YANDEX_API_TOKEN')));
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HEADER, false);
@@ -86,7 +86,7 @@ class GroupRecognitionAudio implements ShouldQueue
     //отправка переведенного сообщения
     function send_message($user_id, $message){
         $vk = new VKApiClient('5.103', VKLanguage::RUSSIAN);
-        $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
+        $response = $vk->messages()->send(env('VK_TOKEN'), array(
             'user_id' => $user_id,
             'message' => $message,
             'random_id' => random_int(1,9999999999),
