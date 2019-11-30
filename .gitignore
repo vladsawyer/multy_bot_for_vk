@@ -13,3 +13,4 @@ yarn-error.log
 .idea
 ngrok
 .phpstorm.meta.php
+/config/var.php
