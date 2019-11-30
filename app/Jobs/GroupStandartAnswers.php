@@ -8,7 +8,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use VK\Client\Enums\VKLanguage;
 use VK\Client\VKApiClient;
 
 class GroupStandartAnswers implements ShouldQueue
@@ -121,7 +120,7 @@ class GroupStandartAnswers implements ShouldQueue
         switch ($payload['command']) {
             case  "start" :
                 // получаю его имя
-                $vk = new VKApiClient('5.103', VKLanguage::RUSSIAN);
+                $vk = new VKApiClient('5.103');
                 $response = $vk->users()->get(config('var.VK_TOKEN'), array(
                     'user_ids' => [$user_id],
                 ));
@@ -180,7 +179,7 @@ class GroupStandartAnswers implements ShouldQueue
         }
 
         // отправляем сообщение
-        $vk = new VKApiClient('5.103', VKLanguage::RUSSIAN);
+        $vk = new VKApiClient('5.103');
         $response = $vk->messages()->send(config('var.VK_TOKEN'), array(
             'user_id' => $user_id,
             'message' => $message,

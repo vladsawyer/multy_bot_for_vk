@@ -7,7 +7,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use VK\Client\Enums\VKLanguage;
 use VK\Client\VKApiClient;
 use Exception;
 
@@ -50,16 +49,15 @@ class ChatRecognitionAudio implements ShouldQueue
     }
 
     function download_audio_message($audio_file, $file_path){
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $audio_file);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $fp = fopen($file_path, 'ab');
+        $ch = curl_init($audio_file);
+        curl_setopt($ch, CURLOPT_FILE, $fp);
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
-        curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
-        $data = curl_exec($ch);
-        file_put_contents($file_path, $data);
+        curl_exec($ch);
         curl_close($ch);
+        fclose($fp);
     }
 
     // отправка в yandex SpeechKit на распознование речи
@@ -89,7 +87,7 @@ class ChatRecognitionAudio implements ShouldQueue
 
     // получаeм его имя
     function get_name($user_id){
-        $vk = new VKApiClient('5.103', VKLanguage::RUSSIAN);
+        $vk = new VKApiClient('5.103');
                 $response = $vk->users()->get(config('var.VK_TOKEN'), array(
             'user_ids' => [$user_id],
         ));
@@ -98,7 +96,7 @@ class ChatRecognitionAudio implements ShouldQueue
 
     //отправка переведенного сообщения
     function send_message($peer_id, $message, $name){
-        $vk = new VKApiClient('5.103', VKLanguage::RUSSIAN);
+        $vk = new VKApiClient('5.103');
         $response = $vk->messages()->send(config('var.VK_TOKEN'), array(
             'peer_id' => $peer_id,
             'message' => "[$name]\n". $message,
