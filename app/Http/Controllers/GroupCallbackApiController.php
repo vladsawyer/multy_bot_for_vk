@@ -37,17 +37,8 @@ class GroupCallbackApiController extends Controller
                     $txt = $object['text'] ?? "";
                     $fwd_messages = $object['fwd_messages'];
 
-                    // проверка на тип задачи
-                    if (isset($object['payload'])) {
-                        $payload = json_decode($object['payload'], true);
-
-                        //отправляем задачу в очередь, ответы на стандартные дейтвия по кнопкам
-                        $this -> dispatch(new GroupStandartAnswers($peer_id, $payload, $object));
-                        break;
-                    }
-
                     // распознования речи из чата
-                    elseif(!empty($object['attachments']) && ($object['attachments'][0]['type'] == "audio_message") && ($user_id != $peer_id)) {
+                    if(!empty($object['attachments']) && ($object['attachments'][0]['type'] == "audio_message") && ($user_id != $peer_id)) {
 
                         $audio_file = $object['attachments'][0]['audio_message']['link_ogg'];
 
@@ -67,6 +58,15 @@ class GroupCallbackApiController extends Controller
                                 $this -> dispatch(new ChatRecognitionAudio($peer_id, $audio_file, $user_id));
                             }
                         }
+                        break;
+                    }
+
+                    // проверка на тип задачи
+                    elseif (isset($object['payload'])) {
+                        $payload = json_decode($object['payload'], true);
+
+                        //отправляем задачу в очередь, ответы на стандартные дейтвия по кнопкам
+                        $this -> dispatch(new GroupStandartAnswers($peer_id, $payload, $object));
                         break;
                     }
 
