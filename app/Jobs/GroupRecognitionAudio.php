@@ -38,14 +38,12 @@ class GroupRecognitionAudio implements ShouldQueue
      */
     public function handle()
     {
-        $file_path = storage_path('recognition_audio')."/audio_". $this -> user_id. '_' .random_int(1,99999).'.ogg';
-        $this -> download_audio_message($this -> audio_file, $file_path);
-        $message = $this -> send_speechKit_recognition($file_path);
+        $data_audio_message = $this -> download_audio_message($this -> audio_file);
+        $message = $this -> send_speechKit_recognition($data_audio_message);
         $this -> send_message($this -> user_id, $message);
-        unlink($file_path);
     }
 
-    function download_audio_message($audio_file, $file_path){
+    function download_audio_message($audio_file){
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $audio_file);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -53,17 +51,16 @@ class GroupRecognitionAudio implements ShouldQueue
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
         curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
-        $data = curl_exec($ch);
-        file_put_contents($file_path, $data);
+        $data_audio_message = curl_exec($ch);
         curl_close($ch);
+        return  $data_audio_message;
     }
 
     // отправка в yandex SpeechKit на распознование речи
-    function send_speechKit_recognition($file_path){
-        $audio_file_path = fopen( $file_path, 'rb');
+    function send_speechKit_recognition($data_audio_message){
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, "https://stt.api.cloud.yandex.net/speech/v1/stt:recognize?lang=ru-RU&format=oggopus");
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Api-Key ' .config('var.YANDEX_API_TOKEN')));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Api-Key '. config('var.YANDEX_API_TOKEN')));
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HEADER, false);
@@ -71,7 +68,7 @@ class GroupRecognitionAudio implements ShouldQueue
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
         curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
-        curl_setopt($ch, CURLOPT_INFILE, $audio_file_path);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_audio_message);
         $res = curl_exec($ch);
         curl_close($ch);
         $decodedResponse = json_decode($res, true);
@@ -79,7 +76,6 @@ class GroupRecognitionAudio implements ShouldQueue
             echo "Error code: " . $decodedResponse["error_code"] . "\n";
             echo "Error message: " . $decodedResponse["error_message"] . "\n";
         }
-//        fclose($audio_file_path);
         return $decodedResponse["result"];
     }
 

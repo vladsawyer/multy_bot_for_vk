@@ -86,23 +86,6 @@ class GroupStandartAnswers implements ShouldQueue
                     ]
 
                 ],
-            'start' =>
-                [
-                    "one_time" => false,
-                    "buttons" => [
-                        [
-                            [
-                                "action" => [
-                                    "type" => "text",
-                                    "payload" => "{\"command\": \"start\"}",
-                                    "label" => "Главная"
-                                ],
-                                "color" => "secondary"
-                            ],
-                        ]
-                    ]
-
-                ]
         ];
     }
 
