@@ -16,7 +16,6 @@ class GroupCallbackApiController extends Controller
 
         if (!isset($vk_callback_event) || ($vk_callback_event['secret'] !== config('var.VK_SECRET_TOKEN'))) {
             return response('nioh');
-
         }
 
         switch ($vk_callback_event['type']) {

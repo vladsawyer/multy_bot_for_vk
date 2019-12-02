@@ -8,6 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+
 use VK\Client\VKApiClient;
 
 class GroupRecognitionAudio implements ShouldQueue
@@ -45,15 +46,16 @@ class GroupRecognitionAudio implements ShouldQueue
     }
 
     function download_audio_message($audio_file, $file_path){
-        $fp = fopen($file_path, 'ab');
-        $ch = curl_init($audio_file);
-        curl_setopt($ch, CURLOPT_FILE, $fp);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $audio_file);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
-        curl_exec($ch);
+        curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
+        $data = curl_exec($ch);
+        file_put_contents($file_path, $data);
         curl_close($ch);
-        fclose($fp);
     }
 
     // отправка в yandex SpeechKit на распознование речи
