@@ -20,29 +20,24 @@ class GroupCallbackApiController extends Controller
 
         switch ($vk_callback_event['type']) {
             case 'confirmation':
-                return config('var.VK_CONFIRMATION_CODE');
-                break;
+               echo config('var.VK_CONFIRMATION_CODE');
+               break;
 
             case 'message_new':
-                echo 'ok';
+                echo response('ok');
                 try {
                     // выборка необходимый переменных
                     $object = $vk_callback_event['object']['message'];
-                    if ($object['from_id'] < 0 ){
-                        break;
-                    } else {
-                        $user_id = $object['from_id'];
-                    }
+                    $object['from_id'] < 0 ? exit() : $user_id = $object['from_id'];
                     $peer_id = $object['peer_id'];
                     $txt = $object['text'] ?? "";
-                    $fwd_messages = $object['fwd_messages'];
+                    $fwd_messages = $object['fwd_messages'] ?? [];
 
                     // распознования речи из чата
                     if(!empty($object['attachments']) && ($object['attachments'][0]['type'] == "audio_message") && ($user_id != $peer_id)) {
-
                         $audio_file = $object['attachments'][0]['audio_message']['link_ogg'];
 
-                        // отправляем задачу в очередь
+                        // отправляем задачу в очеред
                         $this -> dispatch(new ChatRecognitionAudio($peer_id, $audio_file, $user_id));
                         break;
                     }
@@ -50,7 +45,7 @@ class GroupCallbackApiController extends Controller
                     // если существуют вложенные голосоовые сообщения -> обрабатываем
                     elseif(!empty($fwd_messages)){
                         foreach ($fwd_messages as $fwd_message) {
-                            if ($fwd_message['attachments'][0]['type'] == "audio_message") {
+                            if (!empty($fwd_message['attachments']) && $fwd_message['attachments'][0]['type'] == "audio_message") {
                                 $audio_file = $fwd_message['attachments'][0]['audio_message']['link_ogg'];
                                 $user_id = $fwd_message['from_id'];
 
@@ -86,10 +81,13 @@ class GroupCallbackApiController extends Controller
                         $this -> dispatch(new GroupSynthesisAudio($txt, $user_id));
                         break;
                     }
-                    break;
                 } catch (\VK\Exceptions\VKApiException $e) {
                     $this -> getlog($e -> getMessage());
                 }
+                break;
+            default:
+               echo "ok";
+               break;
         }
     }
 
