@@ -11,11 +11,10 @@ class GroupCallbackApiController extends Controller
 {
     public function index()
     {
-        header("HTTP/2 200 OK");
         $vk_callback_event = json_decode(file_get_contents("php://input"), true);
 
         if (!isset($vk_callback_event) || ($vk_callback_event['secret'] !== config('var.VK_SECRET_TOKEN'))) {
-            return response('nioh');
+            return 'nioh';
         }
 
         switch ($vk_callback_event['type']) {
@@ -24,7 +23,7 @@ class GroupCallbackApiController extends Controller
                break;
 
             case 'message_new':
-                echo response('ok');
+                echo 'ok';
                 try {
                     // выборка необходимый переменных
                     $object = $vk_callback_event['object']['message'];
