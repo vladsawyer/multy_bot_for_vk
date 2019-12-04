@@ -73,7 +73,7 @@ class GroupSynthesisAudio implements ShouldQueue
             'text'    => $txt,
         ));
 
-        $headers = ['Authorization: Api-Key ' . config('var.YANDEX_API_TOKEN')];
+        $headers = ['Authorization: Api-Key ' . getenv('YANDEX_API_TOKEN')];
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_AUTOREFERER, TRUE);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -108,7 +108,7 @@ class GroupSynthesisAudio implements ShouldQueue
 
         // Получает адрес сервера для загрузки документа в личное сообщение
         $vk = new VKApiClient('5.103');
-        $response = $vk->docs()->getMessagesUploadServer(config('var.VK_TOKEN'), array(
+        $response = $vk->docs()->getMessagesUploadServer(getenv('VK_TOKEN'), array(
             'peer_id' => $user_id,
             'type' => 'audio_message',
         ));
@@ -137,7 +137,7 @@ class GroupSynthesisAudio implements ShouldQueue
 
         // сохраненяем файл на серваке и получаем идификаторы для отправки файла
         $vk = new VKApiClient('5.103');
-        $parameter = $vk->docs()->save(config('var.VK_TOKEN'), array(
+        $parameter = $vk->docs()->save(getenv('VK_TOKEN'), array(
             'file' => $file,
         ));
 
@@ -149,7 +149,7 @@ class GroupSynthesisAudio implements ShouldQueue
     //отправка голосового сообщения
     function send_message($user_id, $attachment){
         $vk = new VKApiClient('5.103');
-        $response = $vk->messages()->send(config('var.VK_TOKEN'), array(
+        $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
             'user_id' => $user_id,
             'attachment' => $attachment,
             'random_id' => random_int(1,9999999999),

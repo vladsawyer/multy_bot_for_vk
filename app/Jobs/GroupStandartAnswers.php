@@ -104,7 +104,7 @@ class GroupStandartAnswers implements ShouldQueue
             case  "start" :
                 // получаю его имя
                 $vk = new VKApiClient('5.103');
-                $response = $vk->users()->get(config('var.VK_TOKEN'), array(
+                $response = $vk->users()->get(getenv('VK_TOKEN'), array(
                     'user_ids' => [$user_id],
                 ));
                 $name = $response[0]['first_name']. " " .$response[0]['last_name'];
@@ -163,7 +163,7 @@ class GroupStandartAnswers implements ShouldQueue
 
         // отправляем сообщение
         $vk = new VKApiClient('5.103');
-        $response = $vk->messages()->send(config('var.VK_TOKEN'), array(
+        $response = $vk->messages()->send(getenv('VK_TOKEN'), array(
             'user_id' => $user_id,
             'message' => $message,
             'keyboard' => json_encode($send_value_keyboard),

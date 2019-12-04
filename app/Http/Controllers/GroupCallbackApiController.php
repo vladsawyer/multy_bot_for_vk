@@ -13,13 +13,13 @@ class GroupCallbackApiController extends Controller
     {
         $vk_callback_event = json_decode(file_get_contents("php://input"), true);
 
-        if (!isset($vk_callback_event) || ($vk_callback_event['secret'] !== config('var.VK_SECRET_TOKEN'))) {
+        if (!isset($vk_callback_event) || ($vk_callback_event['secret'] !== getenv('VK_SECRET_TOKEN'))) {
             return 'nioh';
         }
 
         switch ($vk_callback_event['type']) {
             case 'confirmation':
-               echo config('var.VK_CONFIRMATION_CODE');
+               echo getenv('VK_CONFIRMATION_CODE');
                break;
 
             case 'message_new':
